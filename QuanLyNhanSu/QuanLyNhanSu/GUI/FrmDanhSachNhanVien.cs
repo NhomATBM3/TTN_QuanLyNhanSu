@@ -145,5 +145,57 @@ namespace QuanLyNhanSu.GUI
             catch { }
         }
         #endregion
+
+        #region Hàm chức năng
+        private void XoaNhanVien(NHANVIEN nv)
+        {
+            // xoa cac bang chua thong tin cua nhan vien do
+            foreach (TAIKHOAN tg in db.TAIKHOANs)
+                if (tg.NHANVIENID == nv.ID) db.TAIKHOANs.Remove(tg);
+
+            foreach (NGOAINGUNHANVIEN tg in db.NGOAINGUNHANVIENs)
+                if (tg.NHANVIENID == nv.ID) db.NGOAINGUNHANVIENs.Remove(tg);
+
+            foreach (QUATRINHCONGTAC tg in db.QUATRINHCONGTACs)
+                if (tg.NHANVIENID == nv.ID) db.QUATRINHCONGTACs.Remove(tg);
+
+            foreach (HOPDONGLAODONG tg in db.HOPDONGLAODONGs)
+                if (tg.NHANVIENID == nv.ID) db.HOPDONGLAODONGs.Remove(tg);
+
+            foreach (BAOHIEMXAHOI tg in db.BAOHIEMXAHOIs)
+                if (tg.NHANVIENID == nv.ID) db.BAOHIEMXAHOIs.Remove(tg);
+
+            foreach (BAOHIEMYTE tg in db.BAOHIEMYTEs)
+                if (tg.NHANVIENID == nv.ID) db.BAOHIEMYTEs.Remove(tg);
+
+            foreach (KHENTHUONG tg in db.KHENTHUONGs)
+                if (tg.NHANVIENID == nv.ID) db.KHENTHUONGs.Remove(tg);
+
+            foreach (KYLUAT tg in db.KYLUATs)
+                if (tg.NHANVIENID == nv.ID) db.KYLUATs.Remove(tg);
+
+            foreach (BANGCAP tg in db.BANGCAPs)
+                if (tg.NHANVIENID == nv.ID) db.BANGCAPs.Remove(tg);
+
+            foreach (QUATRINHHOCTAP tg in db.QUATRINHHOCTAPs)
+                if (tg.NHANVIENID == nv.ID) db.QUATRINHHOCTAPs.Remove(tg);
+
+            foreach (THANNHAN tg in db.THANNHANs)
+                if (tg.NHANVIENID == nv.ID) db.THANNHANs.Remove(tg);
+
+            foreach (TAISAN tg in db.TAISANs)
+                if (tg.NHANVIENID == nv.ID) db.TAISANs.Remove(tg);
+
+            foreach (CHAMCONG tg in db.CHAMCONGs)
+                if (tg.NHANVIENID == nv.ID) db.CHAMCONGs.Remove(tg);
+
+            // xoa bang nhan vien
+
+
+            db.NHANVIENs.Remove(nv);
+
+            db.SaveChanges();
+        }
+        #endregion
     }
 }
