@@ -67,5 +67,83 @@ namespace QuanLyNhanSu.GUI
             LoadDgvNhanVien();
         }
         #endregion
+
+        #region sự kiện
+        private void frmThongTinChiTietNhanVien_Click(object sender, EventArgs e)
+        {
+            int ID;
+            NHANVIEN nv;
+            try
+            {
+                ID = (int)dgvNhanVienView.GetFocusedRowCellValue("ID");
+                nv = db.NHANVIENs.Where(p => p.ID == ID).FirstOrDefault();
+            }
+            catch
+            {
+                ID = 0;
+                MessageBox.Show("Chưa có nhân viên nào được chọn", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            FrmChiTietNhanVien tg = new FrmChiTietNhanVien(nv);
+            tg.ShowDialog();
+            LoadDgvNhanVien();
+        }
+
+        private void btnThemNhanVien_Click(object sender, EventArgs e)
+        {
+            FrmThemNhanVien tg = new FrmThemNhanVien();
+            tg.ShowDialog();
+            LoadDgvNhanVien();
+        }
+
+        private void btnXoaNhanVien_Click(object sender, EventArgs e)
+        {
+            int ID;
+            NHANVIEN nv;
+            try
+            {
+                ID = (int)dgvNhanVienView.GetFocusedRowCellValue("ID");
+                nv = db.NHANVIENs.Where(p => p.ID == ID).FirstOrDefault();
+            }
+            catch
+            {
+                ID = 0;
+                MessageBox.Show("Chưa có nhân viên nào được chọn", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (nhanvien == nv)
+            {
+                MessageBox.Show("Bạn không thể xóa thông tin của chính mình", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            DialogResult rs = MessageBox.Show("Bạn có chắc chắn xóa thông tin của nhân viên " + nv.HOTEN + "?", "Thông báo", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+            if (rs == DialogResult.Cancel) return;
+
+            XoaNhanVien(nv);
+            MessageBox.Show("Xóa thông tin nhân viên thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            LoadDgvNhanVien();
+
+        }
+
+        private void btnDong_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+        #endregion
+
+        #region sự kiện ngầm
+        private void dgvNhanVienView_FocusedRowChanged(object sender, DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventArgs e)
+        {
+            try
+            {
+                index1 = index;
+                index = dgvNhanVienView.FocusedRowHandle;
+            }
+            catch { }
+        }
+        #endregion
     }
 }
