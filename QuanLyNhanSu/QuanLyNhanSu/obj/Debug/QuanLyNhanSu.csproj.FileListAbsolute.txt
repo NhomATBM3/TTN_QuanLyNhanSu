@@ -404,3 +404,6 @@ E:\Study\ClassMTA\Kì 1 năm 2017 - 2018\Thực tập nhóm\BTLTTN\QuanLyNhanSu\
 E:\TTN\TTN_QuanLyNhanSu\QuanLyNhanSu\QuanLyNhanSu\bin\Debug\QuanLyNhanSu.exe.config
 E:\TTN\TTN_QuanLyNhanSu\QuanLyNhanSu\QuanLyNhanSu\obj\Debug\QuanLyNhanSu.exe
 E:\TTN\TTN_QuanLyNhanSu\QuanLyNhanSu\QuanLyNhanSu\obj\Debug\QuanLyNhanSu.pdb
+C:\Users\MTAZero\Documents\GitHub\TTN_QuanLyNhanSu\QuanLyNhanSu\QuanLyNhanSu\bin\Debug\QuanLyNhanSu.exe.config
+C:\Users\MTAZero\Documents\GitHub\TTN_QuanLyNhanSu\QuanLyNhanSu\QuanLyNhanSu\obj\Debug\QuanLyNhanSu.exe
+C:\Users\MTAZero\Documents\GitHub\TTN_QuanLyNhanSu\QuanLyNhanSu\QuanLyNhanSu\obj\Debug\QuanLyNhanSu.pdb
