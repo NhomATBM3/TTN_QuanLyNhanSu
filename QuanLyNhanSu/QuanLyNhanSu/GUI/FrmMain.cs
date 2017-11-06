@@ -161,7 +161,41 @@ namespace QuanLyNhanSu
 
         #endregion
 
-        
+        #region LoadForm
+        private void FrmMain_Load(object sender, EventArgs e)
+        {
+            txtHoTen.Text = nhanvien.HOTEN;
+            txtPhongBan.Text = db.PHONGBANs.Where(p => p.ID == nhanvien.PHONGBANID).FirstOrDefault().TEN;
+            txtChucVu.Text = db.CHUCVUs.Where(p => p.ID == nhanvien.CHUCVUID).FirstOrDefault().TEN;
+
+            /// hiển thị các control theo chức vụ
+            string chucvu = db.CHUCVUs.Where(p => p.ID == nhanvien.CHUCVUID).FirstOrDefault().TEN;
+
+            if (chucvu == "Giám đốc" || chucvu == "Tổng Giám Đốc") return;
+
+            ribbonGroupDanhMuc.Visible = false;
+            return;
+            if (chucvu == "Trưởng phòng") return;
+
+            barChamCong.Enabled = false;
+        }
+        #endregion
+
+        #region sự kiện
+        private void btnDangXuat_Click(object sender, EventArgs e)
+        {
+            DialogResult rs = MessageBox.Show("Bạn có chắc chắn đăng xuất?", "Thông báo", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+            if (rs == DialogResult.Cancel) return;
+            this.Close();
+        }
+
+        private void btnDoiMatKhau_Click(object sender, EventArgs e)
+        {
+            FrmDoiMatKhau doimatkhau = new FrmDoiMatKhau(nhanvien);
+            doimatkhau.ShowDialog();
+            DAO.DBService.Reload();
+        }
+        #endregion
 
         
 
