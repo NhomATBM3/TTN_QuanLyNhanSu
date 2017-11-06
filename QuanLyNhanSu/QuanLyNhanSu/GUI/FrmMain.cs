@@ -13,13 +13,6 @@ namespace QuanLyNhanSu
 {
     public partial class FrmMain : Form
     {
-        #region constructor
-        public FrmMain()
-        {
-            InitializeComponent();
-        }
-        #endregion
-
         QuanLyNhanSuDbContext db = DAO.DBService.db;
         NHANVIEN nhanvien = new NHANVIEN();
 
