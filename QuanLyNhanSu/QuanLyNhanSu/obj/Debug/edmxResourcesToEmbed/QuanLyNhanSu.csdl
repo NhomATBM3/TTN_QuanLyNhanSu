@@ -1,0 +1,776 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="QLNHANSUModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="BANGCAP">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="NHANVIENID" Type="Int32" />
+    <Property Name="NGAY" Type="DateTime" Precision="3" />
+    <Property Name="CHUYENNGANH" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="MABANG" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="LOAITOTNGHIEP" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="LOAIBANG" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="NHANVIEN" Relationship="Self.FK__BANGCAP__NHANVIE__4CA06362" FromRole="BANGCAP" ToRole="NHANVIEN" />
+  </EntityType>
+  <EntityType Name="BAOHIEMXAHOI">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="NHANVIENID" Type="Int32" />
+    <Property Name="SOBAOHIEM" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="NGAYLAMSO" Type="DateTime" Precision="3" />
+    <Property Name="NGAYCAPSO" Type="DateTime" Precision="3" />
+    <Property Name="NOICAP" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="NGAYTHOIBAOHIEM" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="NHANVIEN" Relationship="Self.FK__BAOHIEMXA__NHANV__3E52440B" FromRole="BAOHIEMXAHOI" ToRole="NHANVIEN" />
+  </EntityType>
+  <EntityType Name="BAOHIEMYTE">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="NHANVIENID" Type="Int32" />
+    <Property Name="SOTHE" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="BATDAU" Type="DateTime" Precision="3" />
+    <Property Name="KETTHUC" Type="DateTime" Precision="3" />
+    <Property Name="NGAYCAP" Type="DateTime" Precision="3" />
+    <Property Name="NOICAP" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="NHANVIEN" Relationship="Self.FK__BAOHIEMYT__NHANV__412EB0B6" FromRole="BAOHIEMYTE" ToRole="NHANVIEN" />
+  </EntityType>
+  <EntityType Name="CHAMCONG">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="NHANVIENID" Type="Int32" />
+    <Property Name="NGAY" Type="DateTime" Precision="3" />
+    <Property Name="LOAI" Type="Int32" />
+    <NavigationProperty Name="NHANVIEN" Relationship="Self.FK__CHAMCONG__NHANVI__59063A47" FromRole="CHAMCONG" ToRole="NHANVIEN" />
+  </EntityType>
+  <EntityType Name="CHUCVU">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TEN" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="PHUCAPCHUCVU" Type="Double" />
+    <NavigationProperty Name="NHANVIENs" Relationship="Self.FK__NHANVIEN__CHUCVU__29572725" FromRole="CHUCVU" ToRole="NHANVIEN" />
+  </EntityType>
+  <EntityType Name="CONGVIECNHV">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="NHANVIENID" Type="Int32" />
+    <Property Name="TEN" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="NGAYGIAOVIEC" Type="DateTime" Precision="3" />
+    <Property Name="NGAYBATDAU" Type="DateTime" Precision="3" />
+    <Property Name="NGAYKETTHUC" Type="DateTime" Precision="3" />
+    <Property Name="NGUOIGIAOVIEC" Type="Int32" />
+    <Property Name="TRANGTHAI" Type="Int32" />
+    <Property Name="GHICHU" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="NHANVIEN" Relationship="Self.FK__CONGVIECN__NGUOI__37A5467C" FromRole="CONGVIECNHV" ToRole="NHANVIEN" />
+    <NavigationProperty Name="NHANVIEN1" Relationship="Self.FK__CONGVIECN__NHANV__36B12243" FromRole="CONGVIECNHV" ToRole="NHANVIEN" />
+  </EntityType>
+  <EntityType Name="DANTOC">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TEN" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="NHANVIENs" Relationship="Self.FK__NHANVIEN__DANTOC__2B3F6F97" FromRole="DANTOC" ToRole="NHANVIEN" />
+  </EntityType>
+  <EntityType Name="HOPDONGLAODONG">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="NHANVIENID" Type="Int32" />
+    <Property Name="LUONGID" Type="Int32" />
+    <Property Name="NOIDUNGCONGVIEC" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="LUONG" Relationship="Self.FK__HOPDONGLA__LUONG__3B75D760" FromRole="HOPDONGLAODONG" ToRole="LUONG" />
+    <NavigationProperty Name="NHANVIEN" Relationship="Self.FK__HOPDONGLA__NHANV__3A81B327" FromRole="HOPDONGLAODONG" ToRole="NHANVIEN" />
+  </EntityType>
+  <EntityType Name="HUYEN">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TEN" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="TINHID" Type="Int32" />
+    <NavigationProperty Name="TINH" Relationship="Self.FK__HUYEN__TINHID__1ED998B2" FromRole="HUYEN" ToRole="TINH" />
+    <NavigationProperty Name="XAs" Relationship="Self.FK__XA__HUYENID__21B6055D" FromRole="HUYEN" ToRole="XA" />
+  </EntityType>
+  <EntityType Name="KHENTHUONG">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="NHANVIENID" Type="Int32" />
+    <Property Name="NOIDUNG" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="NGAY" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="NHANVIEN" Relationship="Self.FK__KHENTHUON__NHANV__46E78A0C" FromRole="KHENTHUONG" ToRole="NHANVIEN" />
+  </EntityType>
+  <EntityType Name="KYLUAT">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="NHANVIENID" Type="Int32" />
+    <Property Name="NOIDUNG" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="NGAY" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="NHANVIEN" Relationship="Self.FK__KYLUAT__NHANVIEN__49C3F6B7" FromRole="KYLUAT" ToRole="NHANVIEN" />
+  </EntityType>
+  <EntityType Name="LUONG">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TEN" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="LUONGCOBAN" Type="Double" />
+    <NavigationProperty Name="HOPDONGLAODONGs" Relationship="Self.FK__HOPDONGLA__LUONG__3B75D760" FromRole="LUONG" ToRole="HOPDONGLAODONG" />
+  </EntityType>
+  <EntityType Name="NGOAINGU">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TEN" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="NGOAINGUNHANVIENs" Relationship="Self.FK__NGOAINGUN__NGOAI__33D4B598" FromRole="NGOAINGU" ToRole="NGOAINGUNHANVIEN" />
+  </EntityType>
+  <EntityType Name="NGOAINGUNHANVIEN">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="NHANVIENID" Type="Int32" />
+    <Property Name="NGOAINGUID" Type="Int32" />
+    <NavigationProperty Name="NGOAINGU" Relationship="Self.FK__NGOAINGUN__NGOAI__33D4B598" FromRole="NGOAINGUNHANVIEN" ToRole="NGOAINGU" />
+    <NavigationProperty Name="NHANVIEN" Relationship="Self.FK__NGOAINGUN__NHANV__32E0915F" FromRole="NGOAINGUNHANVIEN" ToRole="NHANVIEN" />
+  </EntityType>
+  <EntityType Name="NHANVIEN">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="MANV" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="PHONGBANID" Type="Int32" />
+    <Property Name="CHUCVUID" Type="Int32" />
+    <Property Name="HOTEN" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="NGAYSINH" Type="DateTime" Precision="3" />
+    <Property Name="GIOITINH" Type="Int32" />
+    <Property Name="MASOTHUE" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="SOLAODONG" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="NOISINH" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="DIACHI" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="CMND" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="NGAYCAP" Type="DateTime" Precision="3" />
+    <Property Name="XAID" Type="Int32" />
+    <Property Name="DANTOCID" Type="Int32" />
+    <Property Name="TONGIAOID" Type="Int32" />
+    <Property Name="TRINHDOHOCVANID" Type="Int32" />
+    <Property Name="ANH" Type="Binary" MaxLength="Max" FixedLength="false" />
+    <Property Name="DANG" Type="Int32" />
+    <Property Name="LUONGID" Type="Int32" />
+    <Property Name="MATKHAU" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="BANGCAPs" Relationship="Self.FK__BANGCAP__NHANVIE__4CA06362" FromRole="NHANVIEN" ToRole="BANGCAP" />
+    <NavigationProperty Name="BAOHIEMXAHOIs" Relationship="Self.FK__BAOHIEMXA__NHANV__3E52440B" FromRole="NHANVIEN" ToRole="BAOHIEMXAHOI" />
+    <NavigationProperty Name="BAOHIEMYTEs" Relationship="Self.FK__BAOHIEMYT__NHANV__412EB0B6" FromRole="NHANVIEN" ToRole="BAOHIEMYTE" />
+    <NavigationProperty Name="CHAMCONGs" Relationship="Self.FK__CHAMCONG__NHANVI__59063A47" FromRole="NHANVIEN" ToRole="CHAMCONG" />
+    <NavigationProperty Name="CHUCVU" Relationship="Self.FK__NHANVIEN__CHUCVU__29572725" FromRole="NHANVIEN" ToRole="CHUCVU" />
+    <NavigationProperty Name="CONGVIECNHVs" Relationship="Self.FK__CONGVIECN__NGUOI__37A5467C" FromRole="NHANVIEN" ToRole="CONGVIECNHV" />
+    <NavigationProperty Name="CONGVIECNHVs1" Relationship="Self.FK__CONGVIECN__NHANV__36B12243" FromRole="NHANVIEN" ToRole="CONGVIECNHV" />
+    <NavigationProperty Name="DANTOC" Relationship="Self.FK__NHANVIEN__DANTOC__2B3F6F97" FromRole="NHANVIEN" ToRole="DANTOC" />
+    <NavigationProperty Name="HOPDONGLAODONGs" Relationship="Self.FK__HOPDONGLA__NHANV__3A81B327" FromRole="NHANVIEN" ToRole="HOPDONGLAODONG" />
+    <NavigationProperty Name="KHENTHUONGs" Relationship="Self.FK__KHENTHUON__NHANV__46E78A0C" FromRole="NHANVIEN" ToRole="KHENTHUONG" />
+    <NavigationProperty Name="KYLUATs" Relationship="Self.FK__KYLUAT__NHANVIEN__49C3F6B7" FromRole="NHANVIEN" ToRole="KYLUAT" />
+    <NavigationProperty Name="NGOAINGUNHANVIENs" Relationship="Self.FK__NGOAINGUN__NHANV__32E0915F" FromRole="NHANVIEN" ToRole="NGOAINGUNHANVIEN" />
+    <NavigationProperty Name="PHONGBAN" Relationship="Self.FK__NHANVIEN__PHONGB__286302EC" FromRole="NHANVIEN" ToRole="PHONGBAN" />
+    <NavigationProperty Name="TONGIAO" Relationship="Self.FK__NHANVIEN__TONGIA__2C3393D0" FromRole="NHANVIEN" ToRole="TONGIAO" />
+    <NavigationProperty Name="TRINHDOHOCVAN" Relationship="Self.FK__NHANVIEN__TRINHD__2D27B809" FromRole="NHANVIEN" ToRole="TRINHDOHOCVAN" />
+    <NavigationProperty Name="XA" Relationship="Self.FK__NHANVIEN__XAID__2A4B4B5E" FromRole="NHANVIEN" ToRole="XA" />
+    <NavigationProperty Name="QUATRINHCONGTACs" Relationship="Self.FK__QUATRINHC__NHANV__440B1D61" FromRole="NHANVIEN" ToRole="QUATRINHCONGTAC" />
+    <NavigationProperty Name="QUATRINHHOCTAPs" Relationship="Self.FK__QUATRINHH__NHANV__4F7CD00D" FromRole="NHANVIEN" ToRole="QUATRINHHOCTAP" />
+    <NavigationProperty Name="TAIKHOANs" Relationship="Self.FK__TAIKHOAN__NHANVI__300424B4" FromRole="NHANVIEN" ToRole="TAIKHOAN" />
+    <NavigationProperty Name="TAISANs" Relationship="Self.FK__TAISAN__NHANVIEN__5629CD9C" FromRole="NHANVIEN" ToRole="TAISAN" />
+    <NavigationProperty Name="THANNHANs" Relationship="Self.FK__THANNHAN__NHANVI__534D60F1" FromRole="NHANVIEN" ToRole="THANNHAN" />
+  </EntityType>
+  <EntityType Name="PHONGBAN">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TEN" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="IDCAPTREN" Type="Int32" />
+    <NavigationProperty Name="NHANVIENs" Relationship="Self.FK__NHANVIEN__PHONGB__286302EC" FromRole="PHONGBAN" ToRole="NHANVIEN" />
+    <NavigationProperty Name="PHONGBAN1" Relationship="Self.FK__PHONGBAN__IDCAPT__108B795B" FromRole="PHONGBAN" ToRole="PHONGBAN1" />
+    <NavigationProperty Name="PHONGBAN2" Relationship="Self.FK__PHONGBAN__IDCAPT__108B795B" FromRole="PHONGBAN1" ToRole="PHONGBAN" />
+  </EntityType>
+  <EntityType Name="QUANHEGD">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TEN" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="THANNHANs" Relationship="Self.FK__THANNHAN__QUANHE__52593CB8" FromRole="QUANHEGD" ToRole="THANNHAN" />
+  </EntityType>
+  <EntityType Name="QUATRINHCONGTAC">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="NHANVIENID" Type="Int32" />
+    <Property Name="BATDAU" Type="DateTime" Precision="3" />
+    <Property Name="KETTHUC" Type="DateTime" Precision="3" />
+    <Property Name="CONGTY" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="DIACHI" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="DIENTHOAI" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="NOIDUNGCONGTAC" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="NHANVIEN" Relationship="Self.FK__QUATRINHC__NHANV__440B1D61" FromRole="QUATRINHCONGTAC" ToRole="NHANVIEN" />
+  </EntityType>
+  <EntityType Name="QUATRINHHOCTAP">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="NHANVIENID" Type="Int32" />
+    <Property Name="BATDAU" Type="DateTime" Precision="3" />
+    <Property Name="KETTHUC" Type="DateTime" Precision="3" />
+    <Property Name="NOIDUNG" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="NHANVIEN" Relationship="Self.FK__QUATRINHH__NHANV__4F7CD00D" FromRole="QUATRINHHOCTAP" ToRole="NHANVIEN" />
+  </EntityType>
+  <EntityType Name="TAIKHOAN">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="USERNAME" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="PASSWORD" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="NHANVIENID" Type="Int32" />
+    <NavigationProperty Name="NHANVIEN" Relationship="Self.FK__TAIKHOAN__NHANVI__300424B4" FromRole="TAIKHOAN" ToRole="NHANVIEN" />
+  </EntityType>
+  <EntityType Name="TAISAN">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="NHANVIENID" Type="Int32" />
+    <Property Name="TENTAISAN" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="GIATRI" Type="Int32" />
+    <Property Name="SOLUONG" Type="Int32" />
+    <Property Name="BATDAUSOHUU" Type="DateTime" Precision="3" />
+    <Property Name="GHICHU" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="NHANVIEN" Relationship="Self.FK__TAISAN__NHANVIEN__5629CD9C" FromRole="TAISAN" ToRole="NHANVIEN" />
+  </EntityType>
+  <EntityType Name="THANNHAN">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="HOTEN" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="NGAYSINH" Type="DateTime" Precision="3" />
+    <Property Name="GIOITINH" Type="Int32" />
+    <Property Name="QUEQUAN" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="CMND" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="QUANHEGDID" Type="Int32" />
+    <Property Name="NHANVIENID" Type="Int32" />
+    <NavigationProperty Name="NHANVIEN" Relationship="Self.FK__THANNHAN__NHANVI__534D60F1" FromRole="THANNHAN" ToRole="NHANVIEN" />
+    <NavigationProperty Name="QUANHEGD" Relationship="Self.FK__THANNHAN__QUANHE__52593CB8" FromRole="THANNHAN" ToRole="QUANHEGD" />
+  </EntityType>
+  <EntityType Name="TINH">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TEN" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="HUYENs" Relationship="Self.FK__HUYEN__TINHID__1ED998B2" FromRole="TINH" ToRole="HUYEN" />
+  </EntityType>
+  <EntityType Name="TONGIAO">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TEN" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="NHANVIENs" Relationship="Self.FK__NHANVIEN__TONGIA__2C3393D0" FromRole="TONGIAO" ToRole="NHANVIEN" />
+  </EntityType>
+  <EntityType Name="TRINHDOHOCVAN">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TEN" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="NHANVIENs" Relationship="Self.FK__NHANVIEN__TRINHD__2D27B809" FromRole="TRINHDOHOCVAN" ToRole="NHANVIEN" />
+  </EntityType>
+  <EntityType Name="XA">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TEN" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="HUYENID" Type="Int32" />
+    <NavigationProperty Name="HUYEN" Relationship="Self.FK__XA__HUYENID__21B6055D" FromRole="XA" ToRole="HUYEN" />
+    <NavigationProperty Name="NHANVIENs" Relationship="Self.FK__NHANVIEN__XAID__2A4B4B5E" FromRole="XA" ToRole="NHANVIEN" />
+  </EntityType>
+  <Association Name="FK__BANGCAP__NHANVIE__4CA06362">
+    <End Role="NHANVIEN" Type="Self.NHANVIEN" Multiplicity="0..1" />
+    <End Role="BANGCAP" Type="Self.BANGCAP" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="NHANVIEN">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="BANGCAP">
+        <PropertyRef Name="NHANVIENID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__BAOHIEMXA__NHANV__3E52440B">
+    <End Role="NHANVIEN" Type="Self.NHANVIEN" Multiplicity="0..1" />
+    <End Role="BAOHIEMXAHOI" Type="Self.BAOHIEMXAHOI" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="NHANVIEN">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="BAOHIEMXAHOI">
+        <PropertyRef Name="NHANVIENID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__BAOHIEMYT__NHANV__412EB0B6">
+    <End Role="NHANVIEN" Type="Self.NHANVIEN" Multiplicity="0..1" />
+    <End Role="BAOHIEMYTE" Type="Self.BAOHIEMYTE" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="NHANVIEN">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="BAOHIEMYTE">
+        <PropertyRef Name="NHANVIENID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__CHAMCONG__NHANVI__59063A47">
+    <End Role="NHANVIEN" Type="Self.NHANVIEN" Multiplicity="0..1" />
+    <End Role="CHAMCONG" Type="Self.CHAMCONG" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="NHANVIEN">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="CHAMCONG">
+        <PropertyRef Name="NHANVIENID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__NHANVIEN__CHUCVU__29572725">
+    <End Role="CHUCVU" Type="Self.CHUCVU" Multiplicity="0..1" />
+    <End Role="NHANVIEN" Type="Self.NHANVIEN" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="CHUCVU">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="NHANVIEN">
+        <PropertyRef Name="CHUCVUID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__CONGVIECN__NGUOI__37A5467C">
+    <End Role="NHANVIEN" Type="Self.NHANVIEN" Multiplicity="0..1" />
+    <End Role="CONGVIECNHV" Type="Self.CONGVIECNHV" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="NHANVIEN">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="CONGVIECNHV">
+        <PropertyRef Name="NGUOIGIAOVIEC" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__CONGVIECN__NHANV__36B12243">
+    <End Role="NHANVIEN" Type="Self.NHANVIEN" Multiplicity="0..1" />
+    <End Role="CONGVIECNHV" Type="Self.CONGVIECNHV" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="NHANVIEN">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="CONGVIECNHV">
+        <PropertyRef Name="NHANVIENID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__NHANVIEN__DANTOC__2B3F6F97">
+    <End Role="DANTOC" Type="Self.DANTOC" Multiplicity="0..1" />
+    <End Role="NHANVIEN" Type="Self.NHANVIEN" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="DANTOC">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="NHANVIEN">
+        <PropertyRef Name="DANTOCID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__HOPDONGLA__LUONG__3B75D760">
+    <End Role="LUONG" Type="Self.LUONG" Multiplicity="0..1" />
+    <End Role="HOPDONGLAODONG" Type="Self.HOPDONGLAODONG" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="LUONG">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="HOPDONGLAODONG">
+        <PropertyRef Name="LUONGID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__HOPDONGLA__NHANV__3A81B327">
+    <End Role="NHANVIEN" Type="Self.NHANVIEN" Multiplicity="0..1" />
+    <End Role="HOPDONGLAODONG" Type="Self.HOPDONGLAODONG" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="NHANVIEN">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="HOPDONGLAODONG">
+        <PropertyRef Name="NHANVIENID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__HUYEN__TINHID__1ED998B2">
+    <End Role="TINH" Type="Self.TINH" Multiplicity="0..1" />
+    <End Role="HUYEN" Type="Self.HUYEN" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TINH">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="HUYEN">
+        <PropertyRef Name="TINHID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__XA__HUYENID__21B6055D">
+    <End Role="HUYEN" Type="Self.HUYEN" Multiplicity="0..1" />
+    <End Role="XA" Type="Self.XA" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="HUYEN">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="XA">
+        <PropertyRef Name="HUYENID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__KHENTHUON__NHANV__46E78A0C">
+    <End Role="NHANVIEN" Type="Self.NHANVIEN" Multiplicity="0..1" />
+    <End Role="KHENTHUONG" Type="Self.KHENTHUONG" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="NHANVIEN">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="KHENTHUONG">
+        <PropertyRef Name="NHANVIENID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__KYLUAT__NHANVIEN__49C3F6B7">
+    <End Role="NHANVIEN" Type="Self.NHANVIEN" Multiplicity="0..1" />
+    <End Role="KYLUAT" Type="Self.KYLUAT" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="NHANVIEN">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="KYLUAT">
+        <PropertyRef Name="NHANVIENID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__NGOAINGUN__NGOAI__33D4B598">
+    <End Role="NGOAINGU" Type="Self.NGOAINGU" Multiplicity="0..1" />
+    <End Role="NGOAINGUNHANVIEN" Type="Self.NGOAINGUNHANVIEN" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="NGOAINGU">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="NGOAINGUNHANVIEN">
+        <PropertyRef Name="NGOAINGUID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__NGOAINGUN__NHANV__32E0915F">
+    <End Role="NHANVIEN" Type="Self.NHANVIEN" Multiplicity="0..1" />
+    <End Role="NGOAINGUNHANVIEN" Type="Self.NGOAINGUNHANVIEN" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="NHANVIEN">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="NGOAINGUNHANVIEN">
+        <PropertyRef Name="NHANVIENID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__NHANVIEN__PHONGB__286302EC">
+    <End Role="PHONGBAN" Type="Self.PHONGBAN" Multiplicity="0..1" />
+    <End Role="NHANVIEN" Type="Self.NHANVIEN" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="PHONGBAN">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="NHANVIEN">
+        <PropertyRef Name="PHONGBANID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__NHANVIEN__TONGIA__2C3393D0">
+    <End Role="TONGIAO" Type="Self.TONGIAO" Multiplicity="0..1" />
+    <End Role="NHANVIEN" Type="Self.NHANVIEN" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TONGIAO">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="NHANVIEN">
+        <PropertyRef Name="TONGIAOID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__NHANVIEN__TRINHD__2D27B809">
+    <End Role="TRINHDOHOCVAN" Type="Self.TRINHDOHOCVAN" Multiplicity="0..1" />
+    <End Role="NHANVIEN" Type="Self.NHANVIEN" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TRINHDOHOCVAN">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="NHANVIEN">
+        <PropertyRef Name="TRINHDOHOCVANID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__NHANVIEN__XAID__2A4B4B5E">
+    <End Role="XA" Type="Self.XA" Multiplicity="0..1" />
+    <End Role="NHANVIEN" Type="Self.NHANVIEN" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="XA">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="NHANVIEN">
+        <PropertyRef Name="XAID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__QUATRINHC__NHANV__440B1D61">
+    <End Role="NHANVIEN" Type="Self.NHANVIEN" Multiplicity="0..1" />
+    <End Role="QUATRINHCONGTAC" Type="Self.QUATRINHCONGTAC" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="NHANVIEN">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="QUATRINHCONGTAC">
+        <PropertyRef Name="NHANVIENID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__QUATRINHH__NHANV__4F7CD00D">
+    <End Role="NHANVIEN" Type="Self.NHANVIEN" Multiplicity="0..1" />
+    <End Role="QUATRINHHOCTAP" Type="Self.QUATRINHHOCTAP" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="NHANVIEN">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="QUATRINHHOCTAP">
+        <PropertyRef Name="NHANVIENID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__TAIKHOAN__NHANVI__300424B4">
+    <End Role="NHANVIEN" Type="Self.NHANVIEN" Multiplicity="0..1" />
+    <End Role="TAIKHOAN" Type="Self.TAIKHOAN" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="NHANVIEN">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="TAIKHOAN">
+        <PropertyRef Name="NHANVIENID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__TAISAN__NHANVIEN__5629CD9C">
+    <End Role="NHANVIEN" Type="Self.NHANVIEN" Multiplicity="0..1" />
+    <End Role="TAISAN" Type="Self.TAISAN" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="NHANVIEN">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="TAISAN">
+        <PropertyRef Name="NHANVIENID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__THANNHAN__NHANVI__534D60F1">
+    <End Role="NHANVIEN" Type="Self.NHANVIEN" Multiplicity="0..1" />
+    <End Role="THANNHAN" Type="Self.THANNHAN" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="NHANVIEN">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="THANNHAN">
+        <PropertyRef Name="NHANVIENID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__PHONGBAN__IDCAPT__108B795B">
+    <End Role="PHONGBAN" Type="Self.PHONGBAN" Multiplicity="0..1" />
+    <End Role="PHONGBAN1" Type="Self.PHONGBAN" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="PHONGBAN">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="PHONGBAN1">
+        <PropertyRef Name="IDCAPTREN" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__THANNHAN__QUANHE__52593CB8">
+    <End Role="QUANHEGD" Type="Self.QUANHEGD" Multiplicity="0..1" />
+    <End Role="THANNHAN" Type="Self.THANNHAN" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="QUANHEGD">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="THANNHAN">
+        <PropertyRef Name="QUANHEGDID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="QuanLyNhanSuDbContext" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="BANGCAPs" EntityType="Self.BANGCAP" />
+    <EntitySet Name="BAOHIEMXAHOIs" EntityType="Self.BAOHIEMXAHOI" />
+    <EntitySet Name="BAOHIEMYTEs" EntityType="Self.BAOHIEMYTE" />
+    <EntitySet Name="CHAMCONGs" EntityType="Self.CHAMCONG" />
+    <EntitySet Name="CHUCVUs" EntityType="Self.CHUCVU" />
+    <EntitySet Name="CONGVIECNHVs" EntityType="Self.CONGVIECNHV" />
+    <EntitySet Name="DANTOCs" EntityType="Self.DANTOC" />
+    <EntitySet Name="HOPDONGLAODONGs" EntityType="Self.HOPDONGLAODONG" />
+    <EntitySet Name="HUYENs" EntityType="Self.HUYEN" />
+    <EntitySet Name="KHENTHUONGs" EntityType="Self.KHENTHUONG" />
+    <EntitySet Name="KYLUATs" EntityType="Self.KYLUAT" />
+    <EntitySet Name="LUONGs" EntityType="Self.LUONG" />
+    <EntitySet Name="NGOAINGUs" EntityType="Self.NGOAINGU" />
+    <EntitySet Name="NGOAINGUNHANVIENs" EntityType="Self.NGOAINGUNHANVIEN" />
+    <EntitySet Name="NHANVIENs" EntityType="Self.NHANVIEN" />
+    <EntitySet Name="PHONGBANs" EntityType="Self.PHONGBAN" />
+    <EntitySet Name="QUANHEGDs" EntityType="Self.QUANHEGD" />
+    <EntitySet Name="QUATRINHCONGTACs" EntityType="Self.QUATRINHCONGTAC" />
+    <EntitySet Name="QUATRINHHOCTAPs" EntityType="Self.QUATRINHHOCTAP" />
+    <EntitySet Name="TAIKHOANs" EntityType="Self.TAIKHOAN" />
+    <EntitySet Name="TAISANs" EntityType="Self.TAISAN" />
+    <EntitySet Name="THANNHANs" EntityType="Self.THANNHAN" />
+    <EntitySet Name="TINHs" EntityType="Self.TINH" />
+    <EntitySet Name="TONGIAOs" EntityType="Self.TONGIAO" />
+    <EntitySet Name="TRINHDOHOCVANs" EntityType="Self.TRINHDOHOCVAN" />
+    <EntitySet Name="XAs" EntityType="Self.XA" />
+    <AssociationSet Name="FK__BANGCAP__NHANVIE__4CA06362" Association="Self.FK__BANGCAP__NHANVIE__4CA06362">
+      <End Role="NHANVIEN" EntitySet="NHANVIENs" />
+      <End Role="BANGCAP" EntitySet="BANGCAPs" />
+    </AssociationSet>
+    <AssociationSet Name="FK__BAOHIEMXA__NHANV__3E52440B" Association="Self.FK__BAOHIEMXA__NHANV__3E52440B">
+      <End Role="NHANVIEN" EntitySet="NHANVIENs" />
+      <End Role="BAOHIEMXAHOI" EntitySet="BAOHIEMXAHOIs" />
+    </AssociationSet>
+    <AssociationSet Name="FK__BAOHIEMYT__NHANV__412EB0B6" Association="Self.FK__BAOHIEMYT__NHANV__412EB0B6">
+      <End Role="NHANVIEN" EntitySet="NHANVIENs" />
+      <End Role="BAOHIEMYTE" EntitySet="BAOHIEMYTEs" />
+    </AssociationSet>
+    <AssociationSet Name="FK__CHAMCONG__NHANVI__59063A47" Association="Self.FK__CHAMCONG__NHANVI__59063A47">
+      <End Role="NHANVIEN" EntitySet="NHANVIENs" />
+      <End Role="CHAMCONG" EntitySet="CHAMCONGs" />
+    </AssociationSet>
+    <AssociationSet Name="FK__NHANVIEN__CHUCVU__29572725" Association="Self.FK__NHANVIEN__CHUCVU__29572725">
+      <End Role="CHUCVU" EntitySet="CHUCVUs" />
+      <End Role="NHANVIEN" EntitySet="NHANVIENs" />
+    </AssociationSet>
+    <AssociationSet Name="FK__CONGVIECN__NGUOI__37A5467C" Association="Self.FK__CONGVIECN__NGUOI__37A5467C">
+      <End Role="NHANVIEN" EntitySet="NHANVIENs" />
+      <End Role="CONGVIECNHV" EntitySet="CONGVIECNHVs" />
+    </AssociationSet>
+    <AssociationSet Name="FK__CONGVIECN__NHANV__36B12243" Association="Self.FK__CONGVIECN__NHANV__36B12243">
+      <End Role="NHANVIEN" EntitySet="NHANVIENs" />
+      <End Role="CONGVIECNHV" EntitySet="CONGVIECNHVs" />
+    </AssociationSet>
+    <AssociationSet Name="FK__NHANVIEN__DANTOC__2B3F6F97" Association="Self.FK__NHANVIEN__DANTOC__2B3F6F97">
+      <End Role="DANTOC" EntitySet="DANTOCs" />
+      <End Role="NHANVIEN" EntitySet="NHANVIENs" />
+    </AssociationSet>
+    <AssociationSet Name="FK__HOPDONGLA__LUONG__3B75D760" Association="Self.FK__HOPDONGLA__LUONG__3B75D760">
+      <End Role="LUONG" EntitySet="LUONGs" />
+      <End Role="HOPDONGLAODONG" EntitySet="HOPDONGLAODONGs" />
+    </AssociationSet>
+    <AssociationSet Name="FK__HOPDONGLA__NHANV__3A81B327" Association="Self.FK__HOPDONGLA__NHANV__3A81B327">
+      <End Role="NHANVIEN" EntitySet="NHANVIENs" />
+      <End Role="HOPDONGLAODONG" EntitySet="HOPDONGLAODONGs" />
+    </AssociationSet>
+    <AssociationSet Name="FK__HUYEN__TINHID__1ED998B2" Association="Self.FK__HUYEN__TINHID__1ED998B2">
+      <End Role="TINH" EntitySet="TINHs" />
+      <End Role="HUYEN" EntitySet="HUYENs" />
+    </AssociationSet>
+    <AssociationSet Name="FK__XA__HUYENID__21B6055D" Association="Self.FK__XA__HUYENID__21B6055D">
+      <End Role="HUYEN" EntitySet="HUYENs" />
+      <End Role="XA" EntitySet="XAs" />
+    </AssociationSet>
+    <AssociationSet Name="FK__KHENTHUON__NHANV__46E78A0C" Association="Self.FK__KHENTHUON__NHANV__46E78A0C">
+      <End Role="NHANVIEN" EntitySet="NHANVIENs" />
+      <End Role="KHENTHUONG" EntitySet="KHENTHUONGs" />
+    </AssociationSet>
+    <AssociationSet Name="FK__KYLUAT__NHANVIEN__49C3F6B7" Association="Self.FK__KYLUAT__NHANVIEN__49C3F6B7">
+      <End Role="NHANVIEN" EntitySet="NHANVIENs" />
+      <End Role="KYLUAT" EntitySet="KYLUATs" />
+    </AssociationSet>
+    <AssociationSet Name="FK__NGOAINGUN__NGOAI__33D4B598" Association="Self.FK__NGOAINGUN__NGOAI__33D4B598">
+      <End Role="NGOAINGU" EntitySet="NGOAINGUs" />
+      <End Role="NGOAINGUNHANVIEN" EntitySet="NGOAINGUNHANVIENs" />
+    </AssociationSet>
+    <AssociationSet Name="FK__NGOAINGUN__NHANV__32E0915F" Association="Self.FK__NGOAINGUN__NHANV__32E0915F">
+      <End Role="NHANVIEN" EntitySet="NHANVIENs" />
+      <End Role="NGOAINGUNHANVIEN" EntitySet="NGOAINGUNHANVIENs" />
+    </AssociationSet>
+    <AssociationSet Name="FK__NHANVIEN__PHONGB__286302EC" Association="Self.FK__NHANVIEN__PHONGB__286302EC">
+      <End Role="PHONGBAN" EntitySet="PHONGBANs" />
+      <End Role="NHANVIEN" EntitySet="NHANVIENs" />
+    </AssociationSet>
+    <AssociationSet Name="FK__NHANVIEN__TONGIA__2C3393D0" Association="Self.FK__NHANVIEN__TONGIA__2C3393D0">
+      <End Role="TONGIAO" EntitySet="TONGIAOs" />
+      <End Role="NHANVIEN" EntitySet="NHANVIENs" />
+    </AssociationSet>
+    <AssociationSet Name="FK__NHANVIEN__TRINHD__2D27B809" Association="Self.FK__NHANVIEN__TRINHD__2D27B809">
+      <End Role="TRINHDOHOCVAN" EntitySet="TRINHDOHOCVANs" />
+      <End Role="NHANVIEN" EntitySet="NHANVIENs" />
+    </AssociationSet>
+    <AssociationSet Name="FK__NHANVIEN__XAID__2A4B4B5E" Association="Self.FK__NHANVIEN__XAID__2A4B4B5E">
+      <End Role="XA" EntitySet="XAs" />
+      <End Role="NHANVIEN" EntitySet="NHANVIENs" />
+    </AssociationSet>
+    <AssociationSet Name="FK__QUATRINHC__NHANV__440B1D61" Association="Self.FK__QUATRINHC__NHANV__440B1D61">
+      <End Role="NHANVIEN" EntitySet="NHANVIENs" />
+      <End Role="QUATRINHCONGTAC" EntitySet="QUATRINHCONGTACs" />
+    </AssociationSet>
+    <AssociationSet Name="FK__QUATRINHH__NHANV__4F7CD00D" Association="Self.FK__QUATRINHH__NHANV__4F7CD00D">
+      <End Role="NHANVIEN" EntitySet="NHANVIENs" />
+      <End Role="QUATRINHHOCTAP" EntitySet="QUATRINHHOCTAPs" />
+    </AssociationSet>
+    <AssociationSet Name="FK__TAIKHOAN__NHANVI__300424B4" Association="Self.FK__TAIKHOAN__NHANVI__300424B4">
+      <End Role="NHANVIEN" EntitySet="NHANVIENs" />
+      <End Role="TAIKHOAN" EntitySet="TAIKHOANs" />
+    </AssociationSet>
+    <AssociationSet Name="FK__TAISAN__NHANVIEN__5629CD9C" Association="Self.FK__TAISAN__NHANVIEN__5629CD9C">
+      <End Role="NHANVIEN" EntitySet="NHANVIENs" />
+      <End Role="TAISAN" EntitySet="TAISANs" />
+    </AssociationSet>
+    <AssociationSet Name="FK__THANNHAN__NHANVI__534D60F1" Association="Self.FK__THANNHAN__NHANVI__534D60F1">
+      <End Role="NHANVIEN" EntitySet="NHANVIENs" />
+      <End Role="THANNHAN" EntitySet="THANNHANs" />
+    </AssociationSet>
+    <AssociationSet Name="FK__PHONGBAN__IDCAPT__108B795B" Association="Self.FK__PHONGBAN__IDCAPT__108B795B">
+      <End Role="PHONGBAN" EntitySet="PHONGBANs" />
+      <End Role="PHONGBAN1" EntitySet="PHONGBANs" />
+    </AssociationSet>
+    <AssociationSet Name="FK__THANNHAN__QUANHE__52593CB8" Association="Self.FK__THANNHAN__QUANHE__52593CB8">
+      <End Role="QUANHEGD" EntitySet="QUANHEGDs" />
+      <End Role="THANNHAN" EntitySet="THANNHANs" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
