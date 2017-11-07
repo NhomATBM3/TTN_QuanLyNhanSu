@@ -167,6 +167,141 @@ namespace QuanLyNhanSu.GUI
             txtTen.Text = "";
         }
         #endregion
+        #region sự kiện
+        private void btnThem_Click(object sender, EventArgs e)
+        {
+            if (btnThem.Text == "Thêm")
+            {
+                btnThem.Text = "Lưu";
+                btnXoa.Enabled = false;
+                btnSua.Enabled = false;
+                btnHuy.Enabled = true;
 
+                dgvMain.Enabled = false;
+                groupThongTin.Enabled = true;
+
+                ClearControl();
+
+                return;
+            }
+
+            if (btnThem.Text == "Lưu")
+            {
+                if (Check())
+                {
+                    btnThem.Text = "Thêm";
+                    btnXoa.Enabled = true;
+                    btnSua.Enabled = true;
+                    btnHuy.Enabled = false;
+
+                    dgvMain.Enabled = true;
+                    groupThongTin.Enabled = false;
+
+                    DANTOC tg = GetTTNhap();
+
+                    db.DANTOCs.Add(tg);
+                    db.SaveChanges();
+
+                    MessageBox.Show("Thêm thông tin dân tộc thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Update();
+
+                }
+
+                return;
+            }
+        }
+
+        private void btnSua_Click(object sender, EventArgs e)
+        {
+            DANTOC tg = GetTTNhap();
+            if (tg.ID == 0)
+            {
+                MessageBox.Show("Chưa có dân tộc nào được chọn", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (btnSua.Text == "Sửa")
+            {
+                btnSua.Text = "Lưu";
+                btnXoa.Enabled = false;
+                btnThem.Enabled = false;
+                btnHuy.Enabled = true;
+
+                dgvMain.Enabled = false;
+                groupThongTin.Enabled = true;
+
+                return;
+            }
+
+            if (btnSua.Text == "Lưu")
+            {
+                if (Check())
+                {
+                    btnSua.Text = "Sửa";
+                    btnXoa.Enabled = true;
+                    btnThem.Enabled = true;
+                    btnHuy.Enabled = false;
+
+                    dgvMain.Enabled = true;
+                    groupThongTin.Enabled = false;
+
+                    DANTOC it = db.DANTOCs.Where(p => p.ID == tg.ID).FirstOrDefault();
+                    it.TEN = tg.TEN;
+                    db.SaveChanges();
+
+                    MessageBox.Show("Sửa thông tin dân tộc thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Update();
+
+                }
+
+                return;
+            }
+        }
+
+        private void btnXoa_Click(object sender, EventArgs e)
+        {
+            DANTOC tg = GetThongTin();
+
+            if (tg.ID == 0)
+            {
+                MessageBox.Show("Chưa có dân tộc nào được chọn", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            DialogResult rs = MessageBox.Show("Bạn có chắc chắn xóa dân tộc " + tg.TEN + "?", "Thông báo", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+            if (rs == DialogResult.Cancel) return;
+
+            try
+            {
+                db.DANTOCs.Remove(tg);
+                db.SaveChanges();
+
+                MessageBox.Show("Xóa thông tin dân tộc thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Update();
+            }
+            catch
+            {
+                MessageBox.Show("Xóa thông tin của dân tộc thất bại", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnHuy_Click(object sender, EventArgs e)
+        {
+            /// chỉnh lại trạng thái
+            btnThem.Text = "Thêm"; btnThem.Enabled = true;
+            btnSua.Text = "Sửa"; btnSua.Enabled = true;
+            btnXoa.Enabled = true;
+
+            groupThongTin.Enabled = false;
+            dgvMain.Enabled = true;
+
+            CapNhatDetail();
+        }
+
+        private void btnDong_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+        #endregion
     }
 }
