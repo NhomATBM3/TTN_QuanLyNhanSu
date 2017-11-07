@@ -26,6 +26,7 @@ namespace QuanLyNhanSu.GUI
 
         public FrmChamCong(NHANVIEN nv)
         {
+            //nhan vien
             InitializeComponent();
             DAO.DBService.Reload();
             nhanvien = nv;
