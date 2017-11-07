@@ -15,6 +15,53 @@ namespace QuanLyNhanSu.GUI
     {
 
 
+        private QuanLyNhanSuDbContext db = DBService.db;
+        private int index = 0;
+        private int index1 = 0;
+
+        #region constructor
+        public FrmDanToc()
+        {
+            InitializeComponent();
+            DBService.Reload();
+        }
+        #endregion
+
+        #region LoadForm
+
+        private void LoadDgvPhongBan()
+        {
+            int i = 1;
+            dgvMain.DataSource = db.DANTOCs.ToList().Select(p => new
+            {
+                STT = i++,
+                ID = p.ID,
+                Ten = p.TEN
+            });
+
+            // chỉnh lại dòng thành dòng vừa chọn
+            try
+            {
+                index = index1;
+                dgvView.FocusedRowHandle = index;
+
+            }
+            catch { }
+        }
+
+        private void LoadInitControl()
+        {
+            groupThongTin.Enabled = false;
+            btnHuy.Enabled = false;
+        }
+        private void FrmPhongBan_Load(object sender, EventArgs e)
+        {
+            LoadInitControl();
+            LoadDgvPhongBan();
+
+        }
+        #endregion
+
         #region constructor
         public FrmDanToc()
         {
