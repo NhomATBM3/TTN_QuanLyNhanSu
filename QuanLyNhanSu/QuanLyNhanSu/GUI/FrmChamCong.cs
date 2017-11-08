@@ -56,5 +56,58 @@ namespace QuanLyNhanSu.GUI
             LoadNhanVien();
         }
 
+        private void LoadNhanVien()
+        {
+            try
+            {
+                int IDPhongBan = (int)dgvPhongBanView.GetFocusedRowCellValue("ID");
+                int i = 1;
+                dgvNhanVienMain.DataSource = db.NHANVIENs.ToList()
+                                             .Where(p => p.PHONGBANID == IDPhongBan)
+                                             .Select(p => new
+                                             {
+                                                 ID = p.ID,
+                                                 STT = i++,
+                                                 TenNV = p.HOTEN,
+                                                 ChucVu = db.CHUCVUs.Where(cv => cv.ID == p.CHUCVUID).FirstOrDefault().TEN
+                                             }).ToList();
+            }
+            catch
+            {
+
+            }
+            LoadChamCong();
+        }
+        private void LoadChamCong()
+        {
+            try
+            {
+                int IDNhanVien = (int)dgvNhanVienView.GetFocusedRowCellValue("ID");
+                int i = 1;
+                dgvChamCongMain.DataSource = db.CHAMCONGs.ToList()
+                                             .Where(cc => cc.NHANVIENID == IDNhanVien)
+                                             .Where(cc => ((DateTime)cc.NGAY) >= dateBatDau.DateTime)
+                                             .Where(cc => ((DateTime)cc.NGAY) <= dateKetThuc.DateTime)
+                                             .OrderBy(cc => cc.NGAY)
+                                             .Select(p => new
+                                             {
+                                                 ID = p.ID,
+                                                 STT = i++,
+                                                 Ngay = ((DateTime)p.NGAY).ToString("dd/MM/yyyy"),
+                                                 Loai = p.LOAI == 0 ? "Buổi bình thường" : "Buổi trực"
+                                             }).ToList();
+            }
+            catch
+            {
+
+            }
+        }
+        private void FrmChamCong_Load(object sender, EventArgs e)
+        {
+            InitControl();
+            LoadPhongBan();
+        }
+        #endregion
+
     }
 }
