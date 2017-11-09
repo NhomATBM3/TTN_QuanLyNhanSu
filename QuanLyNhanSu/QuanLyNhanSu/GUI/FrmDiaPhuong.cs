@@ -514,5 +514,218 @@ namespace QuanLyNhanSu.GUI
 
         #endregion
 
+        #region Xã
+
+        #region Sự kiện ngầm
+        private void UpdateGroupThongTinXa()
+        {
+            XA xa = GetXaWithID();
+            txtTenXa.Text = xa.TEN;
+
+            indexXa1 = indexXa;
+            indexXa = dgvXaView.FocusedRowHandle;
+        }
+        private void dgvXaView_FocusedRowChanged(object sender, DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventArgs e)
+        {
+            UpdateGroupThongTinXa();
+        }
+        #endregion
+
+        #region Hàm chức năng
+        private XA GetXaWithID()
+        {
+            XA ans = new XA();
+            try
+            {
+                int ID = (int)dgvXaView.GetFocusedRowCellValue("ID");
+                XA xa = db.XAs.Where(p => p.ID == ID).FirstOrDefault();
+                return xa;
+            }
+            catch
+            {
+
+            }
+            return ans;
+        }
+        private bool CheckXa()
+        {
+            if (txtTenXa.Text == "")
+            {
+                MessageBox.Show("Tên Xã không được để trống", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+            return true;
+        }
+        private void ClearControlXa()
+        {
+            txtTenXa.Text = "";
+        }
+        #endregion
+
+        #region Sự kiện
+        private void btnThemXa_Click(object sender, EventArgs e)
+        {
+            HUYEN huyen = GetHuyenWithID();
+
+            if (huyen.ID == 0)
+            {
+                MessageBox.Show("Chưa có Huyện nào được chọn", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (btnThemXa.Text == "Thêm Xã")
+            {
+                btnThemXa.Text = "Lưu";
+                btnXoaXa.Text = "Hủy";
+                btnSuaXa.Enabled = false;
+
+                dgvXaMain.Enabled = false;
+                txtTenXa.Enabled = true;
+
+                panelTinh.Enabled = false;
+                panelHuyen.Enabled = false;
+
+                ClearControlXa();
+
+                return;
+            }
+
+            if (btnThemXa.Text == "Lưu")
+            {
+                if (CheckXa())
+                {
+                    /// cập nhật lại trạng thái các control
+                    btnThemXa.Text = "Thêm Xã";
+                    btnXoaXa.Text = "Xóa Xã";
+                    btnSuaXa.Enabled = true;
+
+                    dgvXaMain.Enabled = true;
+                    txtTenXa.Enabled = false;
+
+                    panelTinh.Enabled = true;
+                    panelHuyen.Enabled = true;
+
+                    /// thêm huyện
+                    XA xa = new XA();
+                    xa.TEN = txtTenXa.Text;
+                    xa.HUYENID = huyen.ID;
+
+                    db.XAs.Add(xa);
+                    db.SaveChanges();
+
+                    MessageBox.Show("Thêm thông tin Xã thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadXa();
+                }
+                return;
+            }
+        }
+
+        private void btnSuaXa_Click(object sender, EventArgs e)
+        {
+            /// kiểm tra xem có xã
+            XA xa = GetXaWithID();
+            if (xa.ID == 0)
+            {
+                MessageBox.Show("Chưa có Xã nào được chọn", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            /// code
+            if (btnSuaXa.Text == "Sửa Xã")
+            {
+                btnSuaXa.Text = "Lưu";
+                btnThemXa.Enabled = false;
+                btnXoaXa.Text = "Hủy";
+
+                dgvXaMain.Enabled = false;
+                txtTenXa.Enabled = true;
+
+                panelTinh.Enabled = false;
+                panelHuyen.Enabled = false;
+
+                return;
+            }
+
+            if (btnSuaXa.Text == "Lưu")
+            {
+                if (CheckXa())
+                {
+                    btnSuaXa.Text = "Sửa Xã";
+                    btnThemXa.Enabled = true;
+                    btnXoaXa.Text = "Xóa Xã";
+
+                    dgvXaMain.Enabled = true;
+                    txtTenXa.Enabled = false;
+
+                    panelTinh.Enabled = true;
+                    panelHuyen.Enabled = true;
+
+                    XA ti = db.XAs.Where(p => p.ID == xa.ID).FirstOrDefault();
+                    ti.TEN = txtTenXa.Text;
+                    db.SaveChanges();
+
+                    MessageBox.Show("Sửa thông tin Xã thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadXa();
+                }
+
+                return;
+            }
+        }
+
+        private void btnXoaXa_Click(object sender, EventArgs e)
+        {
+            if (btnXoaXa.Text == "Xóa Xã")
+            {
+                XA xa = GetXaWithID();
+                if (xa.ID == 0)
+                {
+                    MessageBox.Show("Chưa có Xã nào được chọn", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                DialogResult rs = MessageBox.Show("Bạn có chắc chắn xóa thông tin của Xã " + xa.TEN + "?", "Thông báo", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+                if (rs == DialogResult.Cancel) return;
+
+                try
+                {
+                    db.XAs.Remove(xa);
+                    db.SaveChanges();
+                    MessageBox.Show("Xóa thông tin của Xã thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadXa();
+                }
+                catch
+                {
+                    MessageBox.Show("Xóa thông tin của Xã thất bại\n", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                return;
+            }
+
+            if (btnXoaXa.Text == "Hủy")
+            {
+                btnXoaXa.Text = "Xóa Xã";
+                btnSuaXa.Enabled = true; btnSuaXa.Text = "Sửa Xã";
+                btnThemXa.Enabled = true; btnThemXa.Text = "Thêm Xã";
+
+                dgvXaMain.Enabled = true;
+                txtTenXa.Enabled = false;
+
+                panelTinh.Enabled = true;
+                panelHuyen.Enabled = true;
+
+                UpdateGroupThongTinXa();
+
+                return;
+            }
+        }
+
+        private void btnDong_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        #endregion
+
+        #endregion
+
     }
 }
