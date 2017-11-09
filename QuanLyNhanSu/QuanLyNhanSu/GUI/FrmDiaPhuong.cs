@@ -306,5 +306,213 @@ namespace QuanLyNhanSu.GUI
         #endregion
         #endregion
 
+        #region Huyện
+        #region sự kiện ngầm
+        private void UpdateGroupThongTinHuyen()
+        {
+            HUYEN huyen = GetHuyenWithID();
+            txtTenHuyen.Text = huyen.TEN;
+
+            indexHuyen1 = indexHuyen;
+            indexHuyen = dgvHuyenView.FocusedRowHandle;
+
+            LoadXa();
+        }
+        private void dgvHuyenView_FocusedRowChanged(object sender, DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventArgs e)
+        {
+            UpdateGroupThongTinHuyen();
+        }
+        #endregion
+
+        #region Hàm chức năng
+        private bool CheckHuyen()
+        {
+            if (txtTenHuyen.Text == "")
+            {
+                MessageBox.Show("Tên Huyện không được để trống", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+            return true;
+        }
+        private HUYEN GetHuyenWithID()
+        {
+            HUYEN ans = new HUYEN();
+            try
+            {
+                int ID = (int)dgvHuyenView.GetFocusedRowCellValue("ID");
+                HUYEN tinh = db.HUYENs.Where(p => p.ID == ID).FirstOrDefault();
+                return tinh;
+            }
+            catch
+            {
+
+            }
+            return ans;
+        }
+        private void ClearControlHuyen()
+        {
+            txtTenHuyen.Text = "";
+        }
+        #endregion
+
+        #region sự kiện
+        private void btnThemHuyen_Click(object sender, EventArgs e)
+        {
+            TINH tinh = GetTinhWithID();
+
+            if (tinh.ID == 0)
+            {
+                MessageBox.Show("Chưa có Tỉnh nào được chọn", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (btnThemHuyen.Text == "Thêm Huyện")
+            {
+                btnThemHuyen.Text = "Lưu";
+                btnXoaHuyen.Text = "Hủy";
+                btnSuaHuyen.Enabled = false;
+
+                dgvHuyenMain.Enabled = false;
+                txtTenHuyen.Enabled = true;
+
+                panelTinh.Enabled = false;
+                panelXa.Enabled = false;
+
+                ClearControlHuyen();
+
+                return;
+            }
+
+            if (btnThemHuyen.Text == "Lưu")
+            {
+                if (CheckHuyen())
+                {
+                    /// cập nhật lại trạng thái các control
+                    btnThemHuyen.Text = "Thêm Huyện";
+                    btnXoaHuyen.Text = "Xóa Huyện";
+                    btnSuaHuyen.Enabled = true;
+
+                    dgvHuyenMain.Enabled = true;
+                    txtTenHuyen.Enabled = false;
+
+                    panelTinh.Enabled = true;
+                    panelXa.Enabled = true;
+
+                    /// thêm huyện
+                    HUYEN huyen = new HUYEN();
+                    huyen.TEN = txtTenHuyen.Text;
+                    huyen.TINHID = tinh.ID;
+
+                    db.HUYENs.Add(huyen);
+                    db.SaveChanges();
+
+                    MessageBox.Show("Thêm thông tin Huyện thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadHuyen();
+                }
+                return;
+            }
+        }
+        private void btnSuaHuyen_Click(object sender, EventArgs e)
+        {
+            /// kiểm tra xem có huyện
+            HUYEN huyen = GetHuyenWithID();
+            if (huyen.ID == 0)
+            {
+                MessageBox.Show("Chưa có Huyện nào được chọn", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            /// code
+            if (btnSuaHuyen.Text == "Sửa Huyện")
+            {
+                btnSuaHuyen.Text = "Lưu";
+                btnThemHuyen.Enabled = false;
+                btnXoaHuyen.Text = "Hủy";
+
+                dgvHuyenMain.Enabled = false;
+                txtTenHuyen.Enabled = true;
+
+                panelTinh.Enabled = false;
+                panelXa.Enabled = false;
+
+                return;
+            }
+
+            if (btnSuaHuyen.Text == "Lưu")
+            {
+                if (CheckHuyen())
+                {
+                    btnSuaHuyen.Text = "Sửa Huyện";
+                    btnThemHuyen.Enabled = true;
+                    btnXoaHuyen.Text = "Xóa Huyện";
+
+                    dgvHuyenMain.Enabled = true;
+                    txtTenHuyen.Enabled = false;
+
+                    panelTinh.Enabled = true;
+                    panelXa.Enabled = true;
+
+                    HUYEN ti = db.HUYENs.Where(p => p.ID == huyen.ID).FirstOrDefault();
+                    ti.TEN = txtTenHuyen.Text;
+                    db.SaveChanges();
+
+                    MessageBox.Show("Sửa thông tin Huyện thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadHuyen();
+                }
+
+                return;
+            }
+        }
+        private void btnXoaHuyen_Click(object sender, EventArgs e)
+        {
+            if (btnXoaHuyen.Text == "Xóa Huyện")
+            {
+                HUYEN huyen = GetHuyenWithID();
+                if (huyen.ID == 0)
+                {
+                    MessageBox.Show("Chưa có Huyện nào được chọn", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                DialogResult rs = MessageBox.Show("Bạn có chắc chắn xóa thông tin của Huyện " + huyen.TEN + "?", "Thông báo", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+                if (rs == DialogResult.Cancel) return;
+
+                try
+                {
+                    db.HUYENs.Remove(huyen);
+                    db.SaveChanges();
+                    MessageBox.Show("Xóa thông tin của Huyện thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadHuyen();
+                }
+                catch
+                {
+                    MessageBox.Show("Xóa thông tin của Huyện thất bại\n", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                return;
+            }
+
+            if (btnXoaHuyen.Text == "Hủy")
+            {
+                btnXoaHuyen.Text = "Xóa Huyện";
+                btnSuaHuyen.Enabled = true; btnSuaHuyen.Text = "Sửa Huyện";
+                btnThemHuyen.Enabled = true; btnThemHuyen.Text = "Thêm Huyện";
+
+                dgvHuyenMain.Enabled = true;
+                txtTenHuyen.Enabled = false;
+
+                panelTinh.Enabled = true;
+                panelXa.Enabled = true;
+
+                UpdateGroupThongTinHuyen();
+
+                return;
+            }
+        }
+        #endregion
+
+
+
+        #endregion
+
     }
 }
