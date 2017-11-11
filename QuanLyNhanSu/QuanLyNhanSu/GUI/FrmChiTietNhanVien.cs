@@ -427,5 +427,226 @@ namespace QuanLyNhanSu.GUI
         #endregion
         #endregion
 
+        /// <summary>
+        /// Ngoại ngữ
+        /// </summary>
+        #region Ngoại Ngữ
+        #region LoadForm
+        private void InitControlNgoaiNgu()
+        {
+            // cbx NgoaiNgu
+            NgoaiNguCbxTen.DataSource = db.NGOAINGUs.ToList();
+            NgoaiNguCbxTen.ValueMember = "ID";
+            NgoaiNguCbxTen.DisplayMember = "Ten";
+
+            NgoaiNguCbxTen.Enabled = false;
+        }
+        private void LoadDgvNgoaiNgu()
+        {
+            int i = 0;
+            dgvNgoaiNguMain.DataSource = db.NGOAINGUNHANVIENs.Where(p => p.NHANVIENID == nhanvien.ID).ToList().Select(p => new
+            {
+                STT = ++i,
+                ID = p.ID,
+                TenNN = db.NGOAINGUs.Where(nn => nn.ID == p.NGOAINGUID).FirstOrDefault().TEN
+            });
+        }
+        private void LoadNgoaiNgu()
+        {
+            InitControlNgoaiNgu();
+            LoadDgvNgoaiNgu();
+        }
+        #endregion
+
+        #region sự kiện ngầm
+        private void dgvNgoaiNguView_FocusedRowChanged(object sender, DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventArgs e)
+        {
+            UpdateDetailNgoaiNgu();
+        }
+        #endregion
+
+        #region sự kiện
+        private void btnThemNgoaiNgu_Click(object sender, EventArgs e)
+        {
+
+            if (btnThemNgoaiNgu.Text == "Thêm")
+            {
+                btnThemNgoaiNgu.Text = "Lưu";
+                btnXoaNgoaiNgu.Text = "Hủy";
+                btnSuaNgoaiNgu.Enabled = false;
+
+                dgvNgoaiNguMain.Enabled = false;
+                NgoaiNguCbxTen.Enabled = true;
+
+                return;
+            }
+
+            if (btnThemNgoaiNgu.Text == "Lưu")
+            {
+                if (CheckNgoaiNgu())
+                {
+                    btnThemNgoaiNgu.Text = "Thêm";
+                    btnXoaNgoaiNgu.Text = "Xóa";
+                    btnSuaNgoaiNgu.Enabled = true;
+
+                    dgvNgoaiNguMain.Enabled = true;
+                    NgoaiNguCbxTen.Enabled = false;
+
+                    NGOAINGUNHANVIEN nn = GetNgoaiNguWithGroupThongTin();
+                    db.NGOAINGUNHANVIENs.Add(nn);
+                    db.SaveChanges();
+
+                    MessageBox.Show("Thêm thông tin ngoại ngữ thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadDgvNgoaiNgu();
+                }
+                return;
+            }
+        }
+
+        private void btnSuaNgoaiNgu_Click(object sender, EventArgs e)
+        {
+            NGOAINGUNHANVIEN nn = GetNgoaiNguWithID();
+
+            if (nn.ID == 0)
+            {
+                MessageBox.Show("Chưa có ngoại ngữ nào được chọn", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (btnSuaNgoaiNgu.Text == "Sửa")
+            {
+                btnSuaNgoaiNgu.Text = "Lưu";
+                btnThemNgoaiNgu.Enabled = false;
+                btnXoaNgoaiNgu.Text = "Hủy";
+
+                dgvNgoaiNguMain.Enabled = false;
+                NgoaiNguCbxTen.Enabled = true;
+
+                return;
+            }
+
+            if (btnSuaNgoaiNgu.Text == "Lưu")
+            {
+                if (CheckNgoaiNgu())
+                {
+                    btnSuaNgoaiNgu.Text = "Sửa";
+                    btnThemNgoaiNgu.Enabled = true;
+                    btnXoaNgoaiNgu.Text = "Xóa";
+
+                    dgvNgoaiNguMain.Enabled = true;
+                    NgoaiNguCbxTen.Enabled = false;
+
+                    NGOAINGUNHANVIEN nnnv = GetNgoaiNguWithGroupThongTin();
+                    nn.NGOAINGUID = nnnv.NGOAINGUID;
+                    db.SaveChanges();
+
+                    MessageBox.Show("Sửa thông tin ngoại ngữ thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadDgvNgoaiNgu();
+                }
+
+                return;
+            }
+        }
+
+        private void btnXoaNgoaiNgu_Click(object sender, EventArgs e)
+        {
+            if (btnXoaNgoaiNgu.Text == "Xóa")
+            {
+                NGOAINGUNHANVIEN nn = GetNgoaiNguWithID();
+
+                if (nn.ID == 0)
+                {
+                    MessageBox.Show("Chưa có ngoại ngữ nào được chọn", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                string ten = db.NGOAINGUs.Where(p => p.ID == nn.NGOAINGUID).FirstOrDefault().TEN;
+
+                DialogResult rs = MessageBox.Show("Bạn có chắc chắn xóa ngoại ngữ " + ten + "?", "Thông báo", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+                if (rs == DialogResult.Cancel) return;
+
+                db.NGOAINGUNHANVIENs.Remove(nn);
+                db.SaveChanges();
+                MessageBox.Show("Xóa ngoại ngữ thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                LoadDgvNgoaiNgu();
+                return;
+            }
+
+            if (btnXoaNgoaiNgu.Text == "Hủy")
+            {
+                btnXoaNgoaiNgu.Text = "Xóa";
+                btnThemNgoaiNgu.Enabled = true;
+                btnThemNgoaiNgu.Text = "Thêm";
+                btnSuaNgoaiNgu.Enabled = true;
+                btnSuaNgoaiNgu.Text = "Sửa";
+
+                dgvNgoaiNguMain.Enabled = true;
+                NgoaiNguCbxTen.Enabled = false;
+
+                UpdateDetailNgoaiNgu();
+            }
+        }
+        #endregion
+
+        #region Hàm chức năng
+        private void UpdateDetailNgoaiNgu()
+        {
+            try
+            {
+                NGOAINGUNHANVIEN nn = GetNgoaiNguWithID();
+                NgoaiNguCbxTen.SelectedValue = nn.NGOAINGUID;
+            }
+            catch
+            {
+
+            }
+        }
+        private bool CheckNgoaiNgu()
+        {
+            // kiểm tra xem đã có ngoại ngữ nào bị trùng như vậy chưa
+            int ID = 0;
+            try
+            {
+                ID = (int)dgvNgoaiNguView.GetFocusedRowCellValue("ID");
+            }
+            catch { ID = 0; }
+
+            // nếu là thêm thì không cần kiểm tra ID xem có khớp với dòng hiện tại k
+            if (btnThemNgoaiNgu.Enabled == true) ID = 0;
+
+            NGOAINGUNHANVIEN nn = GetNgoaiNguWithGroupThongTin();
+            int cnt = db.NGOAINGUNHANVIENs.Where(p => p.NHANVIENID == nhanvien.ID && p.NGOAINGUID == nn.NGOAINGUID && p.ID != ID).Count();
+
+            if (cnt > 0)
+            {
+                MessageBox.Show("Ngoại ngữ này đã có trong danh sách ngoại ngữ của nhân viên", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            return true;
+        }
+
+        private NGOAINGUNHANVIEN GetNgoaiNguWithID()
+        {
+            int ID = 0;
+            try
+            {
+                ID = (int)dgvNgoaiNguView.GetFocusedRowCellValue("ID");
+            }
+            catch { return new NGOAINGUNHANVIEN(); }
+
+            NGOAINGUNHANVIEN nn = db.NGOAINGUNHANVIENs.Where(p => p.ID == ID).FirstOrDefault();
+            return nn;
+        }
+
+        private NGOAINGUNHANVIEN GetNgoaiNguWithGroupThongTin()
+        {
+            NGOAINGUNHANVIEN ans = new NGOAINGUNHANVIEN();
+            ans.NHANVIENID = nhanvien.ID;
+            ans.NGOAINGUID = (int)NgoaiNguCbxTen.SelectedValue;
+            return ans;
+        }
+        #endregion
+        #endregion
+
     }
 }
