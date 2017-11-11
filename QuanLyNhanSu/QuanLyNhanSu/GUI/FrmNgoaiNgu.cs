@@ -258,6 +258,52 @@ namespace QuanLyNhanSu.GUI
             }
         }
 
+        private void btnXoa_Click(object sender, EventArgs e)
+        {
+            NGOAINGU tg = GetThongTin();
+
+            if (tg.ID == 0)
+            {
+                MessageBox.Show("Chưa có ngoại ngữ nào được chọn", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            DialogResult rs = MessageBox.Show("Bạn có chắc chắn xóa ngoại ngữ " + tg.TEN + "?", "Thông báo", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+            if (rs == DialogResult.Cancel) return;
+
+            try
+            {
+                db.NGOAINGUs.Remove(tg);
+                db.SaveChanges();
+
+                MessageBox.Show("Xóa thông tin ngoai ngữ thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Update();
+            }
+            catch
+            {
+                MessageBox.Show("Xóa thông tin của ngoại ngữ thất bại\nVui lòng xóa tất cả các nhân viên thuộc phòng ban và các phòng ban cấp dưới", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnHuy_Click(object sender, EventArgs e)
+        {
+            /// chỉnh lại trạng thái
+            btnThem.Text = "Thêm"; btnThem.Enabled = true;
+            btnSua.Text = "Sửa"; btnSua.Enabled = true;
+            btnXoa.Enabled = true;
+
+            groupThongTin.Enabled = false;
+            dgvChucVuMain.Enabled = true;
+
+            CapNhatDetail();
+        }
+
+        private void btnDong_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+        #endregion
+
 
 
 
