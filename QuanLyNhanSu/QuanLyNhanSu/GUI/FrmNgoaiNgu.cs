@@ -167,6 +167,98 @@ namespace QuanLyNhanSu.GUI
         }
         #endregion
 
+        #region sự kiện
+        private void btnThem_Click(object sender, EventArgs e)
+        {
+            if (btnThem.Text == "Thêm")
+            {
+                btnThem.Text = "Lưu";
+                btnXoa.Enabled = false;
+                btnSua.Enabled = false;
+                btnHuy.Enabled = true;
+
+                dgvChucVuMain.Enabled = false;
+                groupThongTin.Enabled = true;
+
+                ClearControl();
+
+                return;
+            }
+
+            if (btnThem.Text == "Lưu")
+            {
+                if (Check())
+                {
+                    btnThem.Text = "Thêm";
+                    btnXoa.Enabled = true;
+                    btnSua.Enabled = true;
+                    btnHuy.Enabled = false;
+
+                    dgvChucVuMain.Enabled = true;
+                    groupThongTin.Enabled = false;
+
+                    NGOAINGU tg = GetTTNhap();
+
+                    db.NGOAINGUs.Add(tg);
+                    db.SaveChanges();
+
+                    MessageBox.Show("Thêm thông tin ngoại ngữ thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Update();
+
+                }
+
+                return;
+            }
+        }
+
+        private void btnSua_Click(object sender, EventArgs e)
+        {
+            NGOAINGU tg = GetTTNhap();
+            if (tg.ID == 0)
+            {
+                MessageBox.Show("Chưa có ngoại ngữ nào được chọn", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (btnSua.Text == "Sửa")
+            {
+                btnSua.Text = "Lưu";
+                btnXoa.Enabled = false;
+                btnThem.Enabled = false;
+                btnHuy.Enabled = true;
+
+                dgvChucVuMain.Enabled = false;
+                groupThongTin.Enabled = true;
+
+                return;
+            }
+
+            if (btnSua.Text == "Lưu")
+            {
+                if (Check())
+                {
+                    btnSua.Text = "Sửa";
+                    btnXoa.Enabled = true;
+                    btnThem.Enabled = true;
+                    btnHuy.Enabled = false;
+
+                    dgvChucVuMain.Enabled = true;
+                    groupThongTin.Enabled = false;
+
+                    NGOAINGU it = db.NGOAINGUs.Where(p => p.ID == tg.ID).FirstOrDefault();
+                    it.TEN = tg.TEN;
+                    db.SaveChanges();
+
+                    MessageBox.Show("Sửa thông tin ngoại ngữ thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Update();
+
+                }
+
+                return;
+            }
+        }
+
+
 
 
     }
