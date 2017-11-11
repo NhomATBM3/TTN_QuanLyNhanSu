@@ -61,6 +61,112 @@ namespace QuanLyNhanSu.GUI
         }
         #endregion
 
+        #region sự kiện ngầm
+        private void dgvPhongBan_FocusedRowChanged(object sender, DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventArgs e)
+        {
+            try
+            {
+                CapNhatDetail();
+
+                index1 = index;
+                index = dgvChucVu.FocusedRowHandle;
+            }
+            catch
+            {
+            }
+        }
+        #endregion
+
+        #region Hàm chức năng
+
+        /// <summary>
+        /// Cập nhật lại thông tin của detail khi có sự thay đổi ở các dòng
+        /// </summary>
+        private void CapNhatDetail()
+        {
+            try
+            {
+                NGOAINGU tg = GetThongTin();
+
+                txtTen.Text = tg.TEN;
+            }
+            catch
+            {
+
+            }
+        }
+
+        /// <summary>
+        /// check xem thông tin người dùng nhập vào có chính xác không
+        /// </summary>
+        /// <returns></returns>
+        private bool Check()
+        {
+            if (txtTen.Text == "")
+            {
+                MessageBox.Show("Tên ngoại ngữ không được để trống", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Cập nhật lại trạng thái của form
+        /// </summary>
+        private void Update()
+        {
+            LoadInitControl();
+            LoadDgvPhongBan();
+        }
+
+        /// <summary>
+        /// Lấy ra phòng ban được lựa chọn từ ID
+        /// </summary>
+        /// <returns> Phòng ban </returns>
+        private NGOAINGU GetThongTin()
+        {
+            NGOAINGU ans = new NGOAINGU();
+            ans.ID = 0;
+
+            try
+            {
+                int id = (int)dgvChucVu.GetFocusedRowCellValue("ID");
+                NGOAINGU tg = db.NGOAINGUs.Where(p => p.ID == id).FirstOrDefault();
+                return tg;
+            }
+            catch
+            {
+            }
+
+            return ans;
+        }
+
+        /// <summary>
+        /// get thông tin phòng ban từ group
+        /// </summary>
+        /// <returns></returns>
+        private NGOAINGU GetTTNhap()
+        {
+            NGOAINGU tg = new NGOAINGU();
+
+            try
+            {
+                tg.ID = (int)dgvChucVu.GetFocusedRowCellValue("ID");
+            }
+            catch { }
+
+            tg.TEN = txtTen.Text;
+
+            return tg;
+        }
+
+        private void ClearControl()
+        {
+            txtTen.Text = "";
+        }
+        #endregion
+
 
 
     }
