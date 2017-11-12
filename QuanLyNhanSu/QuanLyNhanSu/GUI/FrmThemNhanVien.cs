@@ -113,6 +113,115 @@ namespace QuanLyNhanSu.GUI
         }
         #endregion
 
+        #region Hàm chức năng
+        private void ChonAnh()
+        {
+            string path = "";
+            try
+            {
+                OpenFileDialog open = new OpenFileDialog();
+                open.ShowDialog();
+                path = open.FileName;
+            }
+            catch
+            {
 
+            }
+
+            try
+            {
+                Image image = Image.FromFile(path);
+                nhanvien.ANH = DAO.Helper.imageToByteArray(image);
+
+
+                ImageAnh.EditValue = nhanvien.ANH;
+            }
+            catch
+            {
+                MessageBox.Show("Định dạng ảnh không phù hợp", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+        }
+        private bool Check()
+        {
+            if (txtHoTen.Text == "")
+            {
+                MessageBox.Show("Tên nhân viên không được để trống", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            if (txtMaNhanVien.Text == "")
+            {
+                MessageBox.Show("Mã nhân viên không được để trống", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            if (db.NHANVIENs.Where(p => p.MANV == txtMaNhanVien.Text).FirstOrDefault() != null)
+            {
+                MessageBox.Show("Mã nhân viên đã được sử dụng", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            if (txtMaCCCV.Text == "")
+            {
+                MessageBox.Show("Mã CCVC không được để trống", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            if (db.NHANVIENs.Where(p => p.MACCVC == txtMaCCCV.Text).FirstOrDefault() != null)
+            {
+                MessageBox.Show("Mã CCVC đã được sử dụng", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            if (txtCMND.Text == "")
+            {
+                MessageBox.Show("CMND nhân viên không được để trống", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            if (txtMaSoThue.Text == "")
+            {
+                MessageBox.Show("Mã số thuế của nhân viên không được để trống", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            if (txtSoLaoDong.Text == "")
+            {
+                MessageBox.Show("Sổ lao động không được để trống", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            if (txtNoiSinh.Text == "")
+            {
+                MessageBox.Show("Nơi sinh của nhân viên không được để trống", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            if (txtDiaChi.Text == "")
+            {
+                MessageBox.Show("Địa chỉ của nhân viên không được để trống", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            bool ok = true;
+            try
+            {
+                int id = (int)cbxXa.SelectedValue;
+                ok = true;
+            }
+            catch
+            {
+                ok = false;
+            }
+            if (!ok)
+            {
+                MessageBox.Show("Chưa có xã nào được chọn", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            return true;
+        }
+        #endregion
     }
 }
