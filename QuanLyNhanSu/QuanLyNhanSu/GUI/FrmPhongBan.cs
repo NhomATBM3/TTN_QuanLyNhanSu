@@ -75,6 +75,25 @@ namespace QuanLyNhanSu.GUI
 
         }
         #endregion
+        #region sự kiện ngầm
+        private void dgvPhongBan_FocusedRowChanged(object sender, DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventArgs e)
+        {
+            try
+            {
+                PHONGBAN pb = GetThongTin();
 
+                txtTenPB.Text = pb.TEN;
+                if (pb.IDCAPTREN == null) cbxCapTren.SelectedIndex = cbxCapTren.Items.Count - 1;
+                else
+                    cbxCapTren.SelectedValue = pb.IDCAPTREN;
+
+                index1 = index;
+                index = dgvPhongBan.FocusedRowHandle;
+            }
+            catch
+            {
+            }
+        }
+        #endregion
     }
 }
