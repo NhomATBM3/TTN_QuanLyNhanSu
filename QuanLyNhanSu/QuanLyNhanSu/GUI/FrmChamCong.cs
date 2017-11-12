@@ -173,5 +173,51 @@ namespace QuanLyNhanSu.GUI
         #endregion
 
 
+        #region sự kiện ngầm
+        private void dgvPhongBanView_FocusedRowChanged(object sender, DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventArgs e)
+        {
+            LoadNhanVien();
+        }
+
+        private void dgvNhanVienView_FocusedRowChanged(object sender, DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventArgs e)
+        {
+            LoadChamCong();
+        }
+
+        private void dgvChamCongView_FocusedRowChanged(object sender, DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventArgs e)
+        {
+            UpdateDetailChamCong();
+        }
+        #endregion
+
+        #region sự kiện chính
+        private void btnLoc_Click(object sender, EventArgs e)
+        {
+            LoadChamCong();
+        }
+
+        private void btnXuatExcel_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                int IDPhongBan = (int)dgvPhongBanView.GetFocusedRowCellValue("ID");
+                PHONGBAN pb = db.PHONGBANs.Where(p => p.ID == IDPhongBan).FirstOrDefault();
+                FrmRpChamCong form = new FrmRpChamCong(pb, dateBatDau.DateTime, dateKetThuc.DateTime);
+                form.ShowDialog();
+            }
+            catch
+            {
+                MessageBox.Show("Chưa có phòng ban nào được chọn", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+        }
+
+        private void btnDong_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        #endregion
+
     }
 }
