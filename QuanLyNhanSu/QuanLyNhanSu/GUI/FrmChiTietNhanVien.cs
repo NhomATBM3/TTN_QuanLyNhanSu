@@ -883,5 +883,427 @@ namespace QuanLyNhanSu.GUI
         #endregion
         #endregion
 
+        /// <summary>
+        /// Khen thưởng
+        /// </summary>
+        #region Khen thưởng
+        #region LoadForm
+        private void InitControlKhenThuong()
+        {
+            KhenThuongGroupThongTin.Enabled = false;
+        }
+        private void LoadDgvKhenThuong()
+        {
+            int i = 0;
+            dgvKhenThuongMain.DataSource = db.KHENTHUONGs.ToList().Where(p => p.NHANVIENID == nhanvien.ID).OrderBy(p => p.NGAY).Select(p => new
+            {
+                STT = ++i,
+                ID = p.ID,
+                Ngay = ((DateTime)p.NGAY).ToString("dd/MM/yyyy"),
+                NoiDung = p.NOIDUNG
+            });
+        }
+        private void LoadKhenThuong()
+        {
+            InitControlKhenThuong();
+            LoadDgvKhenThuong();
+        }
+        #endregion
+
+        #region sự kiện ngầm
+        private void dgvKhenThuongView_FocusedRowChanged(object sender, DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventArgs e)
+        {
+            UpdateDetailKhenThuong();
+        }
+        #endregion
+
+        #region sự kiện
+        private void btnThemKhenThuong_Click(object sender, EventArgs e)
+        {
+            if (btnThemKhenThuong.Text == "Thêm")
+            {
+                btnThemKhenThuong.Text = "Lưu";
+                btnXoaKhenThuong.Text = "Hủy";
+                btnSuaKhenThuong.Enabled = false;
+
+                dgvKhenThuongMain.Enabled = false;
+                KhenThuongGroupThongTin.Enabled = true;
+
+                ClearControlKhenThuong();
+
+                return;
+            }
+
+            if (btnThemKhenThuong.Text == "Lưu")
+            {
+                if (CheckKhenThuong())
+                {
+                    btnThemKhenThuong.Text = "Thêm";
+                    btnXoaKhenThuong.Text = "Xóa";
+                    btnSuaKhenThuong.Enabled = true;
+
+                    dgvKhenThuongMain.Enabled = true;
+                    KhenThuongGroupThongTin.Enabled = false;
+
+                    KHENTHUONG tg = GetKhenThuongWithGroupThongTin();
+                    db.KHENTHUONGs.Add(tg);
+                    db.SaveChanges();
+
+                    MessageBox.Show("Thêm thông tin khen thưởng thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadDgvKhenThuong();
+                }
+                return;
+            }
+        }
+        private void btnSuaKhenThuong_Click(object sender, EventArgs e)
+        {
+            KHENTHUONG tg = GetKhenThuongWithID();
+
+            if (tg.ID == 0)
+            {
+                MessageBox.Show("Chưa có thông tin khen thưởng nào được chọn", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (btnSuaKhenThuong.Text == "Sửa")
+            {
+                btnSuaKhenThuong.Text = "Lưu";
+                btnThemKhenThuong.Enabled = false;
+                btnXoaKhenThuong.Text = "Hủy";
+
+                dgvKhenThuongMain.Enabled = false;
+                KhenThuongGroupThongTin.Enabled = true;
+
+                return;
+            }
+
+            if (btnSuaKhenThuong.Text == "Lưu")
+            {
+                if (CheckKhenThuong())
+                {
+                    btnSuaKhenThuong.Text = "Sửa";
+                    btnThemKhenThuong.Enabled = true;
+                    btnXoaKhenThuong.Text = "Xóa";
+
+                    dgvKhenThuongMain.Enabled = true;
+                    KhenThuongGroupThongTin.Enabled = false;
+
+                    KHENTHUONG kt = GetKhenThuongWithGroupThongTin();
+                    tg.NGAY = kt.NGAY;
+                    tg.NOIDUNG = kt.NOIDUNG;
+                    db.SaveChanges();
+
+                    MessageBox.Show("Sửa thông tin khen thưởng thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadDgvKhenThuong();
+                }
+
+                return;
+            }
+        }
+
+        private void btnXoaKhenThuong_Click(object sender, EventArgs e)
+        {
+            if (btnXoaKhenThuong.Text == "Xóa")
+            {
+                KHENTHUONG tg = GetKhenThuongWithID();
+
+                if (tg.ID == 0)
+                {
+                    MessageBox.Show("Chưa có thông tin khen thưởng nào được chọn", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                DialogResult rs = MessageBox.Show("Bạn có chắc chắn xóa thông tin khen thưởng này không?", "Thông báo", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+                if (rs == DialogResult.Cancel) return;
+
+                db.KHENTHUONGs.Remove(tg);
+                db.SaveChanges();
+                MessageBox.Show("Xóa thông tin khen thưởng thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                LoadDgvKhenThuong();
+                return;
+            }
+
+            if (btnXoaKhenThuong.Text == "Hủy")
+            {
+                btnXoaKhenThuong.Text = "Xóa";
+                btnThemKhenThuong.Enabled = true;
+                btnThemKhenThuong.Text = "Thêm";
+                btnSuaKhenThuong.Enabled = true;
+                btnSuaKhenThuong.Text = "Sửa";
+
+                dgvKhenThuongMain.Enabled = true;
+                KhenThuongGroupThongTin.Enabled = false;
+
+                UpdateDetailKhenThuong();
+            }
+        }
+        #endregion
+
+        #region Hàm chức năng
+        private void ClearControlKhenThuong()
+        {
+            KhenThuongTxtNgay.DateTime = DateTime.Now;
+            KhenThuongTxtNoiDung.Text = "";
+        }
+        private void UpdateDetailKhenThuong()
+        {
+            try
+            {
+                KHENTHUONG tg = GetKhenThuongWithID();
+                KhenThuongTxtNgay.DateTime = (DateTime)tg.NGAY;
+                KhenThuongTxtNoiDung.Text = tg.NOIDUNG;
+            }
+            catch
+            {
+
+            }
+        }
+        private bool CheckKhenThuong()
+        {
+            if (KhenThuongTxtNoiDung.Text == "")
+            {
+                MessageBox.Show("Thông tin về nội dung khen thưởng không được để trống", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+            return true;
+        }
+
+        private KHENTHUONG GetKhenThuongWithID()
+        {
+            int ID = 0;
+            try
+            {
+                ID = (int)dgvKhenThuongView.GetFocusedRowCellValue("ID");
+            }
+            catch { return new KHENTHUONG(); }
+
+            KHENTHUONG tg = db.KHENTHUONGs.Where(p => p.ID == ID).FirstOrDefault();
+            return tg;
+        }
+
+        private KHENTHUONG GetKhenThuongWithGroupThongTin()
+        {
+            KHENTHUONG ans = new KHENTHUONG();
+            ans.NHANVIENID = nhanvien.ID;
+            ans.NGAY = KhenThuongTxtNgay.DateTime;
+            ans.NOIDUNG = KhenThuongTxtNoiDung.Text;
+
+            return ans;
+        }
+        #endregion
+
+        #endregion
+
+        /// <summary>
+        /// kỷ luật
+        /// </summary>
+        #region kỷ luật
+        #region LoadForm
+        private void InitControlKyLuat()
+        {
+            //QuaTrinhCongTacGroupThongTin.Enabled = false;
+            KyLuatGroupThongTin.Enabled = false;
+        }
+        private void LoadDgvKyLuat()
+        {
+            int i = 0;
+            dgvKyLuatMain.DataSource = db.KYLUATs.ToList().Where(p => p.NHANVIENID == nhanvien.ID).OrderBy(p => p.NGAY).Select(p => new
+            {
+                STT = ++i,
+                ID = p.ID,
+                Ngay = ((DateTime)p.NGAY).ToString("dd/MM/yyyy"),
+                NoiDung = p.NOIDUNG
+            });
+        }
+        private void LoadKyLuat()
+        {
+            InitControlKyLuat();
+            LoadDgvKyLuat();
+        }
+        #endregion
+
+        #region sự kiện ngầm
+        private void dgvKyLuatView_FocusedRowChanged(object sender, DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventArgs e)
+        {
+            UpdateDetailKyLuat();
+        }
+        #endregion
+
+        #region sự kiện
+        private void btnThemKyLuat_Click(object sender, EventArgs e)
+        {
+            if (btnThemKyLuat.Text == "Thêm")
+            {
+                btnThemKyLuat.Text = "Lưu";
+                btnXoaKyLuat.Text = "Hủy";
+                btnSuaKyLuat.Enabled = false;
+
+                dgvKyLuatMain.Enabled = false;
+                KyLuatGroupThongTin.Enabled = true;
+
+                ClearControlKyLuat();
+
+                return;
+            }
+
+            if (btnThemKyLuat.Text == "Lưu")
+            {
+                if (CheckKyLuat())
+                {
+                    btnThemKyLuat.Text = "Thêm";
+                    btnXoaKyLuat.Text = "Xóa";
+                    btnSuaKyLuat.Enabled = true;
+
+                    dgvKyLuatMain.Enabled = true;
+                    KyLuatGroupThongTin.Enabled = false;
+
+                    KYLUAT tg = GetKyLuatWithGroupThongTin();
+                    db.KYLUATs.Add(tg);
+                    db.SaveChanges();
+
+                    MessageBox.Show("Thêm thông tin kỷ luật thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadDgvKyLuat();
+                }
+                return;
+            }
+        }
+        private void btnSuaKyLuat_Click(object sender, EventArgs e)
+        {
+            KYLUAT tg = GetKyLuatWithID();
+
+            if (tg.ID == 0)
+            {
+                MessageBox.Show("Chưa có thông tin kỷ luật nào được chọn", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (btnSuaKyLuat.Text == "Sửa")
+            {
+                btnSuaKyLuat.Text = "Lưu";
+                btnThemKyLuat.Enabled = false;
+                btnXoaKyLuat.Text = "Hủy";
+
+                dgvKyLuatMain.Enabled = false;
+                KyLuatGroupThongTin.Enabled = true;
+
+                return;
+            }
+
+            if (btnSuaKyLuat.Text == "Lưu")
+            {
+                if (CheckKyLuat())
+                {
+                    btnSuaKyLuat.Text = "Sửa";
+                    btnThemKyLuat.Enabled = true;
+                    btnXoaKyLuat.Text = "Xóa";
+
+                    dgvKyLuatMain.Enabled = true;
+                    KyLuatGroupThongTin.Enabled = false;
+
+                    KYLUAT kt = GetKyLuatWithGroupThongTin();
+                    tg.NGAY = kt.NGAY;
+                    tg.NOIDUNG = kt.NOIDUNG;
+                    db.SaveChanges();
+
+                    MessageBox.Show("Sửa thông tin kỷ luật thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadDgvKyLuat();
+                }
+
+                return;
+            }
+        }
+        private void btnXoaKyLuat_Click(object sender, EventArgs e)
+        {
+            if (btnXoaKyLuat.Text == "Xóa")
+            {
+                KYLUAT tg = GetKyLuatWithID();
+
+                if (tg.ID == 0)
+                {
+                    MessageBox.Show("Chưa có thông tin kỷ luật nào được chọn", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                DialogResult rs = MessageBox.Show("Bạn có chắc chắn xóa thông tin kỷ luật này không?", "Thông báo", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+                if (rs == DialogResult.Cancel) return;
+
+                db.KYLUATs.Remove(tg);
+                db.SaveChanges();
+                MessageBox.Show("Xóa thông tin kỷ luật thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                LoadDgvKyLuat();
+                return;
+            }
+
+            if (btnXoaKyLuat.Text == "Hủy")
+            {
+                btnXoaKyLuat.Text = "Xóa";
+                btnThemKyLuat.Enabled = true;
+                btnThemKyLuat.Text = "Thêm";
+                btnSuaKyLuat.Enabled = true;
+                btnSuaKyLuat.Text = "Sửa";
+
+                dgvKyLuatMain.Enabled = true;
+                KyLuatGroupThongTin.Enabled = false;
+
+                UpdateDetailKyLuat();
+            }
+        }
+
+        #endregion
+
+        #region Hàm chức năng
+        private void ClearControlKyLuat()
+        {
+            KyLuatDateNgay.DateTime = DateTime.Now;
+            KyLuatTxtNoiDung.Text = "";
+        }
+        private void UpdateDetailKyLuat()
+        {
+            try
+            {
+                KYLUAT tg = GetKyLuatWithID();
+                KyLuatDateNgay.DateTime = (DateTime)tg.NGAY;
+                KyLuatTxtNoiDung.Text = tg.NOIDUNG;
+            }
+            catch
+            {
+
+            }
+        }
+        private bool CheckKyLuat()
+        {
+            if (KyLuatTxtNoiDung.Text == "")
+            {
+                MessageBox.Show("Thông tin về nội dung kỷ luật không được để trống", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+            return true;
+        }
+
+        private KYLUAT GetKyLuatWithID()
+        {
+            int ID = 0;
+            try
+            {
+                ID = (int)dgvKyLuatView.GetFocusedRowCellValue("ID");
+            }
+            catch { return new KYLUAT(); }
+
+            KYLUAT tg = db.KYLUATs.Where(p => p.ID == ID).FirstOrDefault();
+            return tg;
+        }
+
+        private KYLUAT GetKyLuatWithGroupThongTin()
+        {
+            KYLUAT ans = new KYLUAT();
+            ans.NHANVIENID = nhanvien.ID;
+            ans.NGAY = KyLuatDateNgay.DateTime;
+            ans.NOIDUNG = KyLuatTxtNoiDung.Text;
+
+            return ans;
+        }
+        #endregion
+        #endregion
+
     }
 }
