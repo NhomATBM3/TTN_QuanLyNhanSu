@@ -223,5 +223,70 @@ namespace QuanLyNhanSu.GUI
             return true;
         }
         #endregion
+        #region sự kiện
+        private void linkChonAnh_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            ChonAnh();
+        }
+        private void btnLuu_Click(object sender, EventArgs e)
+        {
+            if (Check())
+            {
+                nhanvien.PHONGBANID = (int)cbxPhongBan.SelectedValue;
+                nhanvien.CHUCVUID = (int)cbxChucVu.SelectedValue;
+                nhanvien.HOTEN = txtHoTen.Text;
+                nhanvien.GIOITINH = cbxGioiTinh.SelectedIndex;
+                nhanvien.NGAYSINH = dateNgaySinh.DateTime;
+                nhanvien.MANV = txtMaNhanVien.Text;
+                nhanvien.CMND = txtCMND.Text;
+                nhanvien.NGAYCAP = dateNgayCap.DateTime;
+                nhanvien.MASOTHUE = txtMaSoThue.Text;
+                nhanvien.SOLAODONG = txtSoLaoDong.Text;
+                nhanvien.TRINHDOHOCVANID = (int)cbxTrinhDo.SelectedValue;
+                nhanvien.DANG = cbxDang.SelectedIndex;
+                nhanvien.XAID = (int)cbxXa.SelectedValue;
+                nhanvien.DANTOCID = (int)cbxDanToc.SelectedValue;
+                nhanvien.TONGIAOID = (int)cbxTonGiao.SelectedValue;
+                nhanvien.NOISINH = txtNoiSinh.Text;
+                nhanvien.DIACHI = txtDiaChi.Text;
+                nhanvien.MACCVC = txtMaCCCV.Text;
+                nhanvien.LOAIHOPDONG = cbxLoaiHopDong.SelectedIndex;
+
+                nhanvien.MATKHAU = "1";
+
+                // thêm 1 bản ghi ở bên bảng LƯƠNG, tương đương với nhân viên này
+                LUONG luong = new LUONG();
+                luong.HESOLUONG = 1;
+                luong.THAMNIENVUOTKHUNG = 0;
+                luong.HESOCHENHLECHBAOLUU = 0;
+                luong.TRACHNHIEM = 0;
+                luong.DOCHAI = 0;
+                luong.DACTHUNGHE = 0;
+                luong.DANGUYVIEN = 0;
+                luong.HUONGDANTHUVIEC = 0;
+
+                db.LUONGs.Add(luong);
+                db.SaveChanges();
+
+                nhanvien.LUONGID = luong.ID;
+
+                try
+                {
+                    nhanvien.ANH = (Byte[])ImageAnh.EditValue;
+                }
+                catch { }
+
+                db.NHANVIENs.Add(nhanvien);
+                db.SaveChanges();
+                MessageBox.Show("Thêm thông tin sinh viên thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                this.Close();
+            }
+        }
+
+        private void btnDong_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+        #endregion
     }
 }
