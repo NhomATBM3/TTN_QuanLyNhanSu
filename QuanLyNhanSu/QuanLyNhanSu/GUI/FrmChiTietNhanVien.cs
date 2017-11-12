@@ -648,5 +648,240 @@ namespace QuanLyNhanSu.GUI
         #endregion
         #endregion
 
+        /// <summary>
+        /// Quá trình công tác
+        /// </summary>
+        #region Quá trình công tác
+        #region LoadForm
+        private void InitControlQuaTrinhCongTac()
+        {
+            QuaTrinhCongTacGroupThongTin.Enabled = false;
+        }
+        private void LoadDgvQuaTrinhCongTac()
+        {
+            int i = 0;
+            dgvQuaTrinhCongTacMain.DataSource = db.QUATRINHCONGTACs.Where(p => p.NHANVIENID == nhanvien.ID).ToList().OrderBy(p => p.BATDAU).Select(p => new
+            {
+                STT = ++i,
+                ID = p.ID,
+                BatDau = ((DateTime)p.BATDAU).ToString("dd/MM/yyyy"),
+                KetThuc = ((DateTime)p.KETTHUC).ToString("dd/MM/yyyy"),
+                CongTy = p.CONGTY,
+                NoiDungCongTac = p.NOIDUNGCONGTAC
+            });
+        }
+        private void LoadQuaTrinhCongTac()
+        {
+            InitControlQuaTrinhCongTac();
+            LoadDgvQuaTrinhCongTac();
+        }
+        #endregion
+
+        #region sự kiện ngầm
+        private void dgvQuaTrinhCongTacView_FocusedRowChanged(object sender, DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventArgs e)
+        {
+            UpdateDetailQuaTrinhCongTac();
+        }
+        #endregion
+
+        #region sự kiện
+        private void btnThemQuaTrinhCongTac_Click(object sender, EventArgs e)
+        {
+            if (btnThemQuaTrinhCongTac.Text == "Thêm")
+            {
+                btnThemQuaTrinhCongTac.Text = "Lưu";
+                btnXoaQuaTrinhCongTac.Text = "Hủy";
+                btnSuaQuaTrinhCongTac.Enabled = false;
+
+                dgvQuaTrinhCongTacMain.Enabled = false;
+                QuaTrinhCongTacGroupThongTin.Enabled = true;
+
+                ClearControlQuaTrinhCongTac();
+
+                return;
+            }
+
+            if (btnThemQuaTrinhCongTac.Text == "Lưu")
+            {
+                if (CheckQuaTrinhCongTac())
+                {
+                    btnThemQuaTrinhCongTac.Text = "Thêm";
+                    btnXoaQuaTrinhCongTac.Text = "Xóa";
+                    btnSuaQuaTrinhCongTac.Enabled = true;
+
+                    dgvQuaTrinhCongTacMain.Enabled = true;
+                    QuaTrinhCongTacGroupThongTin.Enabled = false;
+
+                    QUATRINHCONGTAC tg = GetQuaTrinhCongTacWithGroupThongTin();
+                    db.QUATRINHCONGTACs.Add(tg);
+                    db.SaveChanges();
+
+                    MessageBox.Show("Thêm thông tin quá trình công tác thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadDgvQuaTrinhCongTac();
+                }
+                return;
+            }
+        }
+
+        private void btnSuaQuaTrinhCongTac_Click(object sender, EventArgs e)
+        {
+            QUATRINHCONGTAC tg = GetQuaTrinhCongTacWithID();
+
+            if (tg.ID == 0)
+            {
+                MessageBox.Show("Chưa có thông tin quá trình công tác nào được chọn", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (btnSuaQuaTrinhCongTac.Text == "Sửa")
+            {
+                btnSuaQuaTrinhCongTac.Text = "Lưu";
+                btnThemQuaTrinhCongTac.Enabled = false;
+                btnXoaQuaTrinhCongTac.Text = "Hủy";
+
+                dgvQuaTrinhCongTacMain.Enabled = false;
+                QuaTrinhCongTacGroupThongTin.Enabled = true;
+
+                return;
+            }
+
+            if (btnSuaQuaTrinhCongTac.Text == "Lưu")
+            {
+                if (CheckQuaTrinhCongTac())
+                {
+                    btnSuaQuaTrinhCongTac.Text = "Sửa";
+                    btnThemQuaTrinhCongTac.Enabled = true;
+                    btnXoaQuaTrinhCongTac.Text = "Xóa";
+
+                    dgvQuaTrinhCongTacMain.Enabled = true;
+                    QuaTrinhCongTacGroupThongTin.Enabled = false;
+
+                    QUATRINHCONGTAC nnnv = GetQuaTrinhCongTacWithGroupThongTin();
+                    tg.BATDAU = nnnv.BATDAU;
+                    tg.KETTHUC = nnnv.KETTHUC;
+                    tg.CONGTY = nnnv.CONGTY;
+                    tg.DIENTHOAI = nnnv.DIENTHOAI;
+                    tg.NOIDUNGCONGTAC = nnnv.NOIDUNGCONGTAC;
+                    tg.DIACHI = nnnv.DIACHI;
+                    db.SaveChanges();
+
+                    MessageBox.Show("Sửa thông tin quá trình công tác thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadDgvQuaTrinhCongTac();
+                }
+
+                return;
+            }
+        }
+
+        private void btnXoaQuaTrinhCongTac_Click(object sender, EventArgs e)
+        {
+            if (btnXoaQuaTrinhCongTac.Text == "Xóa")
+            {
+                QUATRINHCONGTAC tg = GetQuaTrinhCongTacWithID();
+
+                if (tg.ID == 0)
+                {
+                    MessageBox.Show("Chưa có thông tin quá trình công tác nào được chọn", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                DialogResult rs = MessageBox.Show("Bạn có chắc chắn xóa thông tin quá trình công tác này không?", "Thông báo", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+                if (rs == DialogResult.Cancel) return;
+
+                db.QUATRINHCONGTACs.Remove(tg);
+                db.SaveChanges();
+                MessageBox.Show("Xóa thông tin quá trình công tác thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                LoadDgvQuaTrinhCongTac();
+                return;
+            }
+
+            if (btnXoaQuaTrinhCongTac.Text == "Hủy")
+            {
+                btnXoaQuaTrinhCongTac.Text = "Xóa";
+                btnThemQuaTrinhCongTac.Enabled = true;
+                btnThemQuaTrinhCongTac.Text = "Thêm";
+                btnSuaQuaTrinhCongTac.Enabled = true;
+                btnSuaQuaTrinhCongTac.Text = "Sửa";
+
+                dgvQuaTrinhCongTacMain.Enabled = true;
+                QuaTrinhCongTacGroupThongTin.Enabled = false;
+
+                UpdateDetailQuaTrinhCongTac();
+            }
+        }
+        #endregion
+
+        #region Hàm chức năng
+        private void ClearControlQuaTrinhCongTac()
+        {
+            QuaTrinhCongTacDateBatDau.DateTime = DateTime.Now;
+            QuaTrinhCongTacDateKetThuc.DateTime = DateTime.Now;
+            QuaTrinhCongTacTxtCongTy.Text = "";
+            QuaTrinhCongTacTxtDienThoai.Text = "";
+            QuaTrinhCongTacTxtNoiDung.Text = "";
+            QuaTrinhCongTacDiaChi.Text = "";
+        }
+        private void UpdateDetailQuaTrinhCongTac()
+        {
+            try
+            {
+                QUATRINHCONGTAC tg = GetQuaTrinhCongTacWithID();
+                QuaTrinhCongTacDateBatDau.DateTime = (DateTime)tg.BATDAU;
+                QuaTrinhCongTacDateKetThuc.DateTime = (DateTime)tg.KETTHUC;
+                QuaTrinhCongTacTxtCongTy.Text = tg.CONGTY;
+                QuaTrinhCongTacTxtDienThoai.Text = tg.DIENTHOAI;
+                QuaTrinhCongTacTxtNoiDung.Text = tg.NOIDUNGCONGTAC;
+                QuaTrinhCongTacDiaChi.Text = tg.DIACHI;
+            }
+            catch
+            {
+
+            }
+        }
+        private bool CheckQuaTrinhCongTac()
+        {
+            if (QuaTrinhCongTacTxtCongTy.Text == "")
+            {
+                MessageBox.Show("Thông tin về công ty trong quá trình công tác không được để trống", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            if (QuaTrinhCongTacTxtNoiDung.Text == "")
+            {
+                MessageBox.Show("Thông tin về nội dung trong quá trình công tác không được để trống", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+            return true;
+        }
+
+        private QUATRINHCONGTAC GetQuaTrinhCongTacWithID()
+        {
+            int ID = 0;
+            try
+            {
+                ID = (int)dgvQuaTrinhCongTacView.GetFocusedRowCellValue("ID");
+            }
+            catch { return new QUATRINHCONGTAC(); }
+
+            QUATRINHCONGTAC tg = db.QUATRINHCONGTACs.Where(p => p.ID == ID).FirstOrDefault();
+            return tg;
+        }
+
+        private QUATRINHCONGTAC GetQuaTrinhCongTacWithGroupThongTin()
+        {
+            QUATRINHCONGTAC ans = new QUATRINHCONGTAC();
+            ans.NHANVIENID = nhanvien.ID;
+            ans.BATDAU = QuaTrinhCongTacDateBatDau.DateTime;
+            ans.KETTHUC = QuaTrinhCongTacDateKetThuc.DateTime;
+            ans.CONGTY = QuaTrinhCongTacTxtCongTy.Text;
+            ans.DIENTHOAI = QuaTrinhCongTacTxtDienThoai.Text;
+            ans.DIACHI = QuaTrinhCongTacDiaChi.Text;
+            ans.NOIDUNGCONGTAC = QuaTrinhCongTacTxtNoiDung.Text;
+
+            return ans;
+        }
+        #endregion
+        #endregion
+
     }
 }
