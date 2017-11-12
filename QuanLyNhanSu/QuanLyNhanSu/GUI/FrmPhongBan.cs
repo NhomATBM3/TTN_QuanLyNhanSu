@@ -167,5 +167,149 @@ namespace QuanLyNhanSu.GUI
             cbxCapTren.SelectedIndex = cbxCapTren.Items.Count - 1;
         }
         #endregion
+        #region sự kiện
+        private void btnThem_Click(object sender, EventArgs e)
+        {
+            if (btnThem.Text == "Thêm")
+            {
+                btnThem.Text = "Lưu";
+                btnXoa.Enabled = false;
+                btnSua.Enabled = false;
+                btnHuy.Enabled = true;
+
+                dgvPhongBanMain.Enabled = false;
+                groupThongTin.Enabled = true;
+
+                ClearControl();
+
+                return;
+            }
+
+            if (btnThem.Text == "Lưu")
+            {
+                if (Check())
+                {
+                    btnThem.Text = "Thêm";
+                    btnXoa.Enabled = true;
+                    btnSua.Enabled = true;
+                    btnHuy.Enabled = false;
+
+                    dgvPhongBanMain.Enabled = true;
+                    groupThongTin.Enabled = false;
+
+                    PHONGBAN pb = GetPhongBan();
+
+                    db.PHONGBANs.Add(pb);
+                    db.SaveChanges();
+
+                    MessageBox.Show("Thêm thông tin phòng ban thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Update();
+
+                }
+
+                return;
+            }
+        }
+
+        private void btnSua_Click(object sender, EventArgs e)
+        {
+            PHONGBAN pb = GetPhongBan();
+            if (pb.ID == 0)
+            {
+                MessageBox.Show("Chưa có phòng ban nào được chọn", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (btnSua.Text == "Sửa")
+            {
+                btnSua.Text = "Lưu";
+                btnXoa.Enabled = false;
+                btnThem.Enabled = false;
+                btnHuy.Enabled = true;
+
+                dgvPhongBanMain.Enabled = false;
+                groupThongTin.Enabled = true;
+
+                return;
+            }
+
+            if (btnSua.Text == "Lưu")
+            {
+                if (Check())
+                {
+                    btnSua.Text = "Sửa";
+                    btnXoa.Enabled = true;
+                    btnThem.Enabled = true;
+                    btnHuy.Enabled = false;
+
+                    dgvPhongBanMain.Enabled = true;
+                    groupThongTin.Enabled = false;
+
+                    PHONGBAN it = db.PHONGBANs.Where(p => p.ID == pb.ID).FirstOrDefault();
+                    it.TEN = pb.TEN;
+                    it.IDCAPTREN = pb.IDCAPTREN;
+                    db.SaveChanges();
+
+                    MessageBox.Show("Sửa thông tin phòng ban thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Update();
+
+                }
+
+                return;
+            }
+        }
+
+        private void btnXoa_Click(object sender, EventArgs e)
+        {
+            PHONGBAN pb = GetThongTin();
+
+            if (pb.ID == 0)
+            {
+                MessageBox.Show("Chưa có phòng ban nào được chọn", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            DialogResult rs = MessageBox.Show("Bạn có chắc chắn xóa phòng ban " + pb.TEN + "?", "Thông báo", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+            if (rs == DialogResult.Cancel) return;
+
+            try
+            {
+                db.PHONGBANs.Remove(pb);
+                db.SaveChanges();
+
+                MessageBox.Show("Xóa thông tin phòng ban thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Update();
+            }
+            catch
+            {
+                MessageBox.Show("Xóa thông tin của phòng ban thất bại\nVui lòng xóa tất cả các nhân viên thuộc phòng ban và các phòng ban cấp dưới", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnHuy_Click(object sender, EventArgs e)
+        {
+            /// chỉnh lại trạng thái
+            btnThem.Text = "Thêm"; btnThem.Enabled = true;
+            btnSua.Text = "Sửa"; btnSua.Enabled = true;
+            btnXoa.Enabled = true;
+
+            groupThongTin.Enabled = false;
+            dgvPhongBanMain.Enabled = true;
+
+            /// chỉnh thông tin của group thông tin
+            PHONGBAN pb = GetThongTin();
+
+            txtTenPB.Text = pb.TEN;
+            if (pb.IDCAPTREN == null) cbxCapTren.SelectedIndex = cbxCapTren.Items.Count - 1;
+            else
+                cbxCapTren.SelectedValue = pb.IDCAPTREN;
+        }
+
+        private void btnDong_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+        #endregion
+
     }
 }
