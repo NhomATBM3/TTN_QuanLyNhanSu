@@ -95,5 +95,77 @@ namespace QuanLyNhanSu.GUI
             }
         }
         #endregion
+        #region Hàm chức năng
+
+        /// <summary>
+        /// check xem thông tin người dùng nhập vào có chính xác không
+        /// </summary>
+        /// <returns></returns>
+        private bool Check()
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// Cập nhật lại trạng thái của form
+        /// </summary>
+        private void Update()
+        {
+            LoadInitControl();
+            LoadDgvPhongBan();
+        }
+
+        /// <summary>
+        /// Lấy ra phòng ban được lựa chọn từ ID
+        /// </summary>
+        /// <returns> Phòng ban </returns>
+        private PHONGBAN GetThongTin()
+        {
+            PHONGBAN ans = new PHONGBAN();
+            ans.ID = 0;
+
+            try
+            {
+                int id = (int)dgvPhongBan.GetFocusedRowCellValue("ID");
+                PHONGBAN pb = db.PHONGBANs.Where(p => p.ID == id).FirstOrDefault();
+                return pb;
+            }
+            catch
+            {
+            }
+
+            return ans;
+        }
+
+        /// <summary>
+        /// get thông tin phòng ban từ group phòng ban
+        /// </summary>
+        /// <returns></returns>
+        private PHONGBAN GetPhongBan()
+        {
+            PHONGBAN pb = new PHONGBAN();
+
+            try
+            {
+                pb.ID = (int)dgvPhongBan.GetFocusedRowCellValue("ID");
+            }
+            catch { }
+
+            pb.TEN = txtTenPB.Text;
+            if (cbxCapTren.Text != "Không") pb.IDCAPTREN = (int)cbxCapTren.SelectedValue;
+            else
+            {
+                pb.IDCAPTREN = null;
+            }
+
+            return pb;
+        }
+
+        private void ClearControl()
+        {
+            txtTenPB.Text = "";
+            cbxCapTren.SelectedIndex = cbxCapTren.Items.Count - 1;
+        }
+        #endregion
     }
 }
