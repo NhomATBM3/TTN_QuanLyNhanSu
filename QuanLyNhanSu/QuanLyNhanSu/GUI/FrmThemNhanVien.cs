@@ -288,5 +288,16 @@ namespace QuanLyNhanSu.GUI
             this.Close();
         }
         #endregion
+        #region sự kiện ngầm
+        private void cbxTinh_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            LoadHuyen();
+        }
+
+        private void cbxHuyen_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            LoadXa();
+        }
+        #endregion
     }
 }
