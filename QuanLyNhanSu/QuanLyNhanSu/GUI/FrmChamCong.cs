@@ -219,5 +219,51 @@ namespace QuanLyNhanSu.GUI
 
         #endregion
 
+        #region sự kiện thêm sửa xóa chấm công
+        private void btnThem_Click(object sender, EventArgs e)
+        {
+            NHANVIEN tg = GetNhanVienWithID();
+            if (tg.ID == 0)
+            {
+                MessageBox.Show("Chưa có nhân viên nào được chọn", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (btnThem.Text == "Thêm")
+            {
+
+                btnThem.Text = "Lưu";
+                btnSua.Enabled = false;
+                btnXoa.Text = "Hủy";
+
+                dgvChamCongMain.Enabled = false;
+                GroupThongTin.Enabled = true;
+
+                return;
+            }
+
+            if (btnThem.Text == "Lưu")
+            {
+                if (CheckChamCong())
+                {
+                    btnThem.Text = "Thêm";
+                    btnSua.Enabled = true;
+                    btnXoa.Text = "Hủy";
+
+                    dgvChamCongMain.Enabled = true;
+                    GroupThongTin.Enabled = false;
+
+                    CHAMCONG cc = GetChamCongWithGroupThongTin();
+                    db.CHAMCONGs.Add(cc);
+                    db.SaveChanges();
+
+                    MessageBox.Show("Thêm thông tin chấm công thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadChamCong();
+                }
+
+                return;
+            }
+        }
+
     }
 }
