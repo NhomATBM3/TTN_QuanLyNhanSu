@@ -258,6 +258,52 @@ namespace QuanLyNhanSu.GUI
             }
         }
 
+        private void btnXoa_Click(object sender, EventArgs e)
+        {
+            QUANHEGD tg = GetThongTin();
+
+            if (tg.ID == 0)
+            {
+                MessageBox.Show("Chưa có quan hệ gia đình nào được chọn", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            DialogResult rs = MessageBox.Show("Bạn có chắc chắn xóa quan hệ gia đình " + tg.TEN + "?", "Thông báo", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+            if (rs == DialogResult.Cancel) return;
+
+            try
+            {
+                db.QUANHEGDs.Remove(tg);
+                db.SaveChanges();
+
+                MessageBox.Show("Xóa thông tin quan hệ gia đình thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Update();
+            }
+            catch
+            {
+                MessageBox.Show("Xóa thông tin của ngoại ngữ thất bại\nVui lòng xóa tất cả các nhân viên thuộc phòng ban và các phòng ban cấp dưới", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnHuy_Click(object sender, EventArgs e)
+        {
+            /// chỉnh lại trạng thái
+            btnThem.Text = "Thêm"; btnThem.Enabled = true;
+            btnSua.Text = "Sửa"; btnSua.Enabled = true;
+            btnXoa.Enabled = true;
+
+            groupThongTin.Enabled = false;
+            dgvMain.Enabled = true;
+
+            CapNhatDetail();
+        }
+
+        private void btnDong_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+        #endregion
+
 
 
     }
