@@ -168,6 +168,39 @@ namespace QuanLyNhanSu.GUI
             return ans;
         }
 
+        /// <summary>
+        /// get thông tin phòng ban từ group phòng ban
+        /// </summary>
+        /// <returns></returns>
+        private CHUCVU GetTTNhap()
+        {
+            CHUCVU tg = new CHUCVU();
+
+            try
+            {
+                tg.ID = (int)dgvChucVu.GetFocusedRowCellValue("ID");
+            }
+            catch { }
+
+            tg.TEN = txtTen.Text;
+            try
+            {
+                tg.PHUCAPCHUCVU = Double.Parse(txtPhuCapChucVu.Text);
+            }
+            catch
+            {
+
+            }
+
+            return tg;
+        }
+
+        private void ClearControl()
+        {
+            txtTen.Text = "";
+            txtPhuCapChucVu.Text = "";
+        }
+        #endregion
 
 
 
