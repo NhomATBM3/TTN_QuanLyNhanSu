@@ -265,5 +265,88 @@ namespace QuanLyNhanSu.GUI
             }
         }
 
+        private void btnSua_Click(object sender, EventArgs e)
+        {
+            CHAMCONG tg = GetChamCongWithID();
+            if (tg.ID == 0)
+            {
+                MessageBox.Show("Chưa có thông tin chấm công nào được chọn", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (btnSua.Text == "Sửa")
+            {
+                btnSua.Text = "Lưu";
+                btnThem.Enabled = false;
+                btnXoa.Text = "Hủy";
+
+                dgvChamCongMain.Enabled = false;
+                GroupThongTin.Enabled = true;
+
+                return;
+            }
+
+            if (btnSua.Text == "Lưu")
+            {
+                if (CheckChamCong())
+                {
+                    btnSua.Text = "Sửa";
+                    btnThem.Enabled = true;
+                    btnXoa.Text = "Xóa";
+
+                    dgvChamCongMain.Enabled = true;
+                    GroupThongTin.Enabled = false;
+
+                    CHAMCONG tt = GetChamCongWithGroupThongTin();
+                    tg.NGAY = tt.NGAY;
+                    tg.LOAI = tt.LOAI;
+
+                    db.SaveChanges();
+                    MessageBox.Show("Sửa thông tin chấm công thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadChamCong();
+                }
+
+                return;
+            }
+        }
+        private void btnXoa_Click(object sender, EventArgs e)
+        {
+            if (btnXoa.Text == "Xóa")
+            {
+                CHAMCONG tg = GetChamCongWithID();
+                if (tg.ID == 0)
+                {
+                    MessageBox.Show("Chưa có thông tin chấm công nào được chọn", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                DialogResult rs = MessageBox.Show("Bạn có chắc chắn xóa thông tin chấm công này không?", "Thông báo", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+                if (rs == DialogResult.Cancel) return;
+
+                db.CHAMCONGs.Remove(tg);
+                db.SaveChanges();
+                MessageBox.Show("Xóa thông tin chấm công thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                LoadChamCong();
+                return;
+            }
+
+            if (btnXoa.Text == "Hủy")
+            {
+                btnThem.Enabled = true;
+                btnThem.Text = "Thêm";
+                btnSua.Enabled = true;
+                btnSua.Text = "Sửa";
+                btnXoa.Text = "Xóa";
+
+                dgvChamCongMain.Enabled = true;
+                GroupThongTin.Enabled = false;
+
+                UpdateDetailChamCong();
+
+                return;
+            }
+        }
+        #endregion
+
     }
 }
