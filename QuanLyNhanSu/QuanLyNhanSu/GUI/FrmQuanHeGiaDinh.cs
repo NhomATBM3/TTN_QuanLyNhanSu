@@ -167,6 +167,98 @@ namespace QuanLyNhanSu.GUI
         }
         #endregion
 
+        #region sự kiện
+        private void btnThem_Click(object sender, EventArgs e)
+        {
+            if (btnThem.Text == "Thêm")
+            {
+                btnThem.Text = "Lưu";
+                btnXoa.Enabled = false;
+                btnSua.Enabled = false;
+                btnHuy.Enabled = true;
+
+                dgvMain.Enabled = false;
+                groupThongTin.Enabled = true;
+
+                ClearControl();
+
+                return;
+            }
+
+            if (btnThem.Text == "Lưu")
+            {
+                if (Check())
+                {
+                    btnThem.Text = "Thêm";
+                    btnXoa.Enabled = true;
+                    btnSua.Enabled = true;
+                    btnHuy.Enabled = false;
+
+                    dgvMain.Enabled = true;
+                    groupThongTin.Enabled = false;
+
+                    QUANHEGD tg = GetTTNhap();
+
+                    db.QUANHEGDs.Add(tg);
+                    db.SaveChanges();
+
+                    MessageBox.Show("Thêm thông tin quan hệ gia đình thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Update();
+
+                }
+
+                return;
+            }
+        }
+
+        private void btnSua_Click(object sender, EventArgs e)
+        {
+            QUANHEGD tg = GetTTNhap();
+            if (tg.ID == 0)
+            {
+                MessageBox.Show("Chưa có quan hệ gia đình nào được chọn", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (btnSua.Text == "Sửa")
+            {
+                btnSua.Text = "Lưu";
+                btnXoa.Enabled = false;
+                btnThem.Enabled = false;
+                btnHuy.Enabled = true;
+
+                dgvMain.Enabled = false;
+                groupThongTin.Enabled = true;
+
+                return;
+            }
+
+            if (btnSua.Text == "Lưu")
+            {
+                if (Check())
+                {
+                    btnSua.Text = "Sửa";
+                    btnXoa.Enabled = true;
+                    btnThem.Enabled = true;
+                    btnHuy.Enabled = false;
+
+                    dgvMain.Enabled = true;
+                    groupThongTin.Enabled = false;
+
+                    QUANHEGD it = db.QUANHEGDs.Where(p => p.ID == tg.ID).FirstOrDefault();
+                    it.TEN = tg.TEN;
+                    db.SaveChanges();
+
+                    MessageBox.Show("Sửa thông tin quan hệ gia đinh thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Update();
+
+                }
+
+                return;
+            }
+        }
+
+
 
     }
 }
