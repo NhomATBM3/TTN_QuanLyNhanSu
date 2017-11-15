@@ -1305,5 +1305,960 @@ namespace QuanLyNhanSu.GUI
         #endregion
         #endregion
 
+        /// <summary>
+        /// Bằng cấp
+        /// </summary>
+        #region Bằng cấp
+        #region LoadForm
+        private void InitControlBangCap()
+        {
+            //QuaTrinhCongTacGroupThongTin.Enabled = false;
+            BangCapGroupThongTin.Enabled = false;
+        }
+        private void LoadDgvBangCap()
+        {
+            int i = 0;
+            dgvBangCapMain.DataSource = db.BANGCAPs.ToList().Where(p => p.NHANVIENID == nhanvien.ID).OrderBy(p => p.NGAY).Select(p => new
+            {
+                STT = ++i,
+                ID = p.ID,
+                Ngay = ((DateTime)p.NGAY).ToString("dd/MM/yyyy"),
+                ChuyenNganh = p.CHUYENNGANH,
+                LoaiBang = p.LOAIBANG,
+                LoaiTotNghiep = p.LOAITOTNGHIEP
+            });
+        }
+        private void LoadBangCap()
+        {
+            InitControlBangCap();
+            LoadDgvBangCap();
+        }
+        #endregion
+
+        #region sự kiện ngầm
+        private void dgvBangCapView_FocusedRowChanged(object sender, DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventArgs e)
+        {
+            UpdateDetailBangCap();
+        }
+        #endregion
+
+        #region sự kiện
+        private void btnThemBangCap_Click(object sender, EventArgs e)
+        {
+            if (btnThemBangCap.Text == "Thêm")
+            {
+                btnThemBangCap.Text = "Lưu";
+                btnXoaBangCap.Text = "Hủy";
+                btnSuaBangCap.Enabled = false;
+
+                dgvBangCapMain.Enabled = false;
+                BangCapGroupThongTin.Enabled = true;
+
+                ClearControlBangCap();
+
+                return;
+            }
+
+            if (btnThemBangCap.Text == "Lưu")
+            {
+                if (CheckBangCap())
+                {
+                    btnThemBangCap.Text = "Thêm";
+                    btnXoaBangCap.Text = "Xóa";
+                    btnSuaBangCap.Enabled = true;
+
+                    dgvBangCapMain.Enabled = true;
+                    BangCapGroupThongTin.Enabled = false;
+
+                    BANGCAP tg = GetBangCapWithGroupThongTin();
+                    db.BANGCAPs.Add(tg);
+                    db.SaveChanges();
+
+                    MessageBox.Show("Thêm thông tin bằng cấp thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadDgvBangCap();
+                }
+                return;
+            }
+        }
+        private void btnSuaBangCap_Click(object sender, EventArgs e)
+        {
+            BANGCAP tg = GetBangCapWithID();
+
+            if (tg.ID == 0)
+            {
+                MessageBox.Show("Chưa có thông tin bằng cấp nào được chọn", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (btnSuaBangCap.Text == "Sửa")
+            {
+                btnSuaBangCap.Text = "Lưu";
+                btnThemBangCap.Enabled = false;
+                btnXoaBangCap.Text = "Hủy";
+
+                dgvBangCapMain.Enabled = false;
+                BangCapGroupThongTin.Enabled = true;
+
+                return;
+            }
+
+            if (btnSuaBangCap.Text == "Lưu")
+            {
+                if (CheckBangCap())
+                {
+                    btnSuaBangCap.Text = "Sửa";
+                    btnThemBangCap.Enabled = true;
+                    btnXoaBangCap.Text = "Xóa";
+
+                    dgvBangCapMain.Enabled = true;
+                    BangCapGroupThongTin.Enabled = false;
+
+                    BANGCAP kt = GetBangCapWithGroupThongTin();
+                    tg.NGAY = kt.NGAY;
+                    tg.NHANVIENID = kt.NHANVIENID;
+                    tg.CHUYENNGANH = kt.CHUYENNGANH;
+                    tg.LOAIBANG = kt.LOAIBANG;
+                    tg.LOAITOTNGHIEP = kt.LOAITOTNGHIEP;
+                    tg.MABANG = kt.MABANG;
+                    db.SaveChanges();
+
+                    MessageBox.Show("Sửa thông tin bằng cấp thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadDgvBangCap();
+                }
+
+                return;
+            }
+        }
+        private void btnXoaBangCap_Click(object sender, EventArgs e)
+        {
+            if (btnXoaBangCap.Text == "Xóa")
+            {
+                BANGCAP tg = GetBangCapWithID();
+
+                if (tg.ID == 0)
+                {
+                    MessageBox.Show("Chưa có thông tin bằng cấp nào được chọn", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                DialogResult rs = MessageBox.Show("Bạn có chắc chắn xóa thông tin bằng cấp này không?", "Thông báo", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+                if (rs == DialogResult.Cancel) return;
+
+                db.BANGCAPs.Remove(tg);
+                db.SaveChanges();
+                MessageBox.Show("Xóa thông tin bằng cấp thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                LoadDgvBangCap();
+                return;
+            }
+
+            if (btnXoaBangCap.Text == "Hủy")
+            {
+                btnXoaBangCap.Text = "Xóa";
+                btnThemBangCap.Enabled = true;
+                btnThemBangCap.Text = "Thêm";
+                btnSuaBangCap.Enabled = true;
+                btnSuaBangCap.Text = "Sửa";
+
+                dgvBangCapMain.Enabled = true;
+                BangCapGroupThongTin.Enabled = false;
+
+                UpdateDetailBangCap();
+            }
+        }
+
+        #endregion
+
+        #region Hàm chức năng
+        private void ClearControlBangCap()
+        {
+            BangCapDateNgay.DateTime = DateTime.Now;
+            BangCapTxtChuyenNganh.Text = "";
+            BangCapTxtLoaiBang.Text = "";
+            BangCapTxtLoaiTotNghiep.Text = "";
+            BangCapTxtMaBang.Text = "";
+        }
+        private void UpdateDetailBangCap()
+        {
+            try
+            {
+                BANGCAP tg = GetBangCapWithID();
+                BangCapDateNgay.DateTime = (DateTime)tg.NGAY;
+                BangCapTxtChuyenNganh.Text = tg.CHUYENNGANH;
+                BangCapTxtLoaiBang.Text = tg.LOAIBANG;
+                BangCapTxtLoaiTotNghiep.Text = tg.LOAITOTNGHIEP;
+                BangCapTxtMaBang.Text = tg.MABANG;
+            }
+            catch
+            {
+
+            }
+        }
+        private bool CheckBangCap()
+        {
+            return true;
+        }
+
+        private BANGCAP GetBangCapWithID()
+        {
+            int ID = 0;
+            try
+            {
+                ID = (int)dgvBangCapView.GetFocusedRowCellValue("ID");
+            }
+            catch { return new BANGCAP(); }
+
+            BANGCAP tg = db.BANGCAPs.Where(p => p.ID == ID).FirstOrDefault();
+            return tg;
+        }
+
+        private BANGCAP GetBangCapWithGroupThongTin()
+        {
+            BANGCAP ans = new BANGCAP();
+            ans.NHANVIENID = nhanvien.ID;
+            ans.NGAY = BangCapDateNgay.DateTime;
+            ans.CHUYENNGANH = BangCapTxtChuyenNganh.Text;
+            ans.LOAIBANG = BangCapTxtLoaiBang.Text;
+            ans.LOAITOTNGHIEP = BangCapTxtLoaiTotNghiep.Text;
+            ans.MABANG = BangCapTxtMaBang.Text;
+
+            return ans;
+        }
+        #endregion
+        #endregion
+
+        /// <summary>
+        /// Quá trình học tập
+        /// </summary>
+        #region Quá trình học tập
+        #region LoadForm
+        private void InitControlQuaTrinhHocTap()
+        {
+            //QuaTrinhCongTacGroupThongTin.Enabled = false;
+            QuaTrinhHocTapGroupThongTin.Enabled = false;
+        }
+        private void LoadDgvQuaTrinhHocTap()
+        {
+            int i = 0;
+            dgvQuaTrinhHocTapMain.DataSource = db.QUATRINHHOCTAPs.ToList().Where(p => p.NHANVIENID == nhanvien.ID).OrderBy(p => p.BATDAU).Select(p => new
+            {
+                STT = ++i,
+                ID = p.ID,
+                BatDau = ((DateTime)p.BATDAU).ToString("dd/MM/yyyy"),
+                KetThuc = ((DateTime)p.KETTHUC).ToString("dd/MM/yyyy"),
+                NoiDung = p.NOIDUNG
+            });
+        }
+        private void LoadQuaTrinhHocTap()
+        {
+            InitControlQuaTrinhHocTap();
+            LoadDgvQuaTrinhHocTap();
+        }
+        #endregion
+
+        #region sự kiện ngầm
+        private void dgvQuaTrinhHocTapView_FocusedRowChanged(object sender, DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventArgs e)
+        {
+            UpdateDetailQuaTrinhHocTap();
+        }
+        #endregion
+
+        #region sự kiện
+        private void btnThemQuaTrinhHocTap_Click(object sender, EventArgs e)
+        {
+            if (btnThemQuaTrinhHocTap.Text == "Thêm")
+            {
+                btnThemQuaTrinhHocTap.Text = "Lưu";
+                btnXoaQuaTrinhHocTap.Text = "Hủy";
+                btnSuaQuaTrinhHocTap.Enabled = false;
+
+                dgvQuaTrinhHocTapMain.Enabled = false;
+                QuaTrinhHocTapGroupThongTin.Enabled = true;
+
+                ClearControlQuaTrinhHocTap();
+
+                return;
+            }
+
+            if (btnThemQuaTrinhHocTap.Text == "Lưu")
+            {
+                if (CheckQuaTrinhHocTap())
+                {
+                    btnThemQuaTrinhHocTap.Text = "Thêm";
+                    btnXoaQuaTrinhHocTap.Text = "Xóa";
+                    btnSuaQuaTrinhHocTap.Enabled = true;
+
+                    dgvQuaTrinhHocTapMain.Enabled = true;
+                    QuaTrinhHocTapGroupThongTin.Enabled = false;
+
+                    QUATRINHHOCTAP tg = GetQuaTrinhHocTapWithGroupThongTin();
+                    db.QUATRINHHOCTAPs.Add(tg);
+                    db.SaveChanges();
+
+                    MessageBox.Show("Thêm thông tin quá trình học tập thành công thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadDgvQuaTrinhHocTap();
+                }
+                return;
+            }
+        }
+        private void btnSuaQuaTrinhHocTap_Click(object sender, EventArgs e)
+        {
+            QUATRINHHOCTAP tg = GetQuaTrinhHocTapWithID();
+
+            if (tg.ID == 0)
+            {
+                MessageBox.Show("Chưa có thông tin quá trình học tập nào được chọn", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (btnSuaQuaTrinhHocTap.Text == "Sửa")
+            {
+                btnSuaQuaTrinhHocTap.Text = "Lưu";
+                btnThemQuaTrinhHocTap.Enabled = false;
+                btnXoaQuaTrinhHocTap.Text = "Hủy";
+
+                dgvQuaTrinhHocTapMain.Enabled = false;
+                QuaTrinhHocTapGroupThongTin.Enabled = true;
+
+                return;
+            }
+
+            if (btnSuaQuaTrinhHocTap.Text == "Lưu")
+            {
+                if (CheckQuaTrinhHocTap())
+                {
+                    btnSuaQuaTrinhHocTap.Text = "Sửa";
+                    btnThemQuaTrinhHocTap.Enabled = true;
+                    btnXoaQuaTrinhHocTap.Text = "Xóa";
+
+                    dgvQuaTrinhHocTapMain.Enabled = true;
+                    QuaTrinhHocTapGroupThongTin.Enabled = false;
+
+                    QUATRINHHOCTAP kt = GetQuaTrinhHocTapWithGroupThongTin();
+                    tg.BATDAU = kt.BATDAU;
+                    tg.KETTHUC = kt.KETTHUC;
+                    tg.NOIDUNG = kt.NOIDUNG;
+                    db.SaveChanges();
+
+                    MessageBox.Show("Sửa thông tin quá trình học tập thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadDgvQuaTrinhHocTap();
+                }
+
+                return;
+            }
+        }
+        private void btnXoaQuaTrinhHocTap_Click(object sender, EventArgs e)
+        {
+            if (btnXoaQuaTrinhHocTap.Text == "Xóa")
+            {
+                QUATRINHHOCTAP tg = GetQuaTrinhHocTapWithID();
+
+                if (tg.ID == 0)
+                {
+                    MessageBox.Show("Chưa có thông tin quá trình học tập nào được chọn", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                DialogResult rs = MessageBox.Show("Bạn có chắc chắn xóa thông tin quá trình học tập này không?", "Thông báo", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+                if (rs == DialogResult.Cancel) return;
+
+                db.QUATRINHHOCTAPs.Remove(tg);
+                db.SaveChanges();
+                MessageBox.Show("Xóa thông tin quá trình học tập thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                LoadDgvQuaTrinhHocTap();
+                return;
+            }
+
+            if (btnXoaQuaTrinhHocTap.Text == "Hủy")
+            {
+                btnXoaQuaTrinhHocTap.Text = "Xóa";
+                btnThemQuaTrinhHocTap.Enabled = true;
+                btnThemQuaTrinhHocTap.Text = "Thêm";
+                btnSuaQuaTrinhHocTap.Enabled = true;
+                btnSuaQuaTrinhHocTap.Text = "Sửa";
+
+                dgvQuaTrinhHocTapMain.Enabled = true;
+                QuaTrinhHocTapGroupThongTin.Enabled = false;
+
+                UpdateDetailQuaTrinhHocTap();
+            }
+        }
+
+        #endregion
+
+        #region Hàm chức năng
+        private void ClearControlQuaTrinhHocTap()
+        {
+            QuaTrinhHocTapDateBatDau.DateTime = DateTime.Now;
+            QuaTrinhHocTapDateKetThuc.DateTime = DateTime.Now;
+            QuaTrinhHocTapTxtNoiDung.Text = "";
+        }
+        private void UpdateDetailQuaTrinhHocTap()
+        {
+            try
+            {
+                QUATRINHHOCTAP tg = GetQuaTrinhHocTapWithID();
+                QuaTrinhHocTapDateBatDau.DateTime = (DateTime)tg.BATDAU;
+                QuaTrinhHocTapDateKetThuc.DateTime = (DateTime)tg.KETTHUC;
+                QuaTrinhHocTapTxtNoiDung.Text = tg.NOIDUNG;
+            }
+            catch
+            {
+
+            }
+        }
+        private bool CheckQuaTrinhHocTap()
+        {
+            if (QuaTrinhHocTapTxtNoiDung.Text == "")
+            {
+                MessageBox.Show("Nội dung của quá trình học tập không được để trống", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+            return true;
+        }
+
+        private QUATRINHHOCTAP GetQuaTrinhHocTapWithID()
+        {
+            int ID = 0;
+            try
+            {
+                ID = (int)dgvQuaTrinhHocTapView.GetFocusedRowCellValue("ID");
+            }
+            catch { return new QUATRINHHOCTAP(); }
+
+            QUATRINHHOCTAP tg = db.QUATRINHHOCTAPs.Where(p => p.ID == ID).FirstOrDefault();
+            return tg;
+        }
+
+        private QUATRINHHOCTAP GetQuaTrinhHocTapWithGroupThongTin()
+        {
+            QUATRINHHOCTAP ans = new QUATRINHHOCTAP();
+            ans.NHANVIENID = nhanvien.ID;
+            ans.BATDAU = QuaTrinhHocTapDateBatDau.DateTime;
+            ans.KETTHUC = QuaTrinhHocTapDateKetThuc.DateTime;
+            ans.NOIDUNG = QuaTrinhHocTapTxtNoiDung.Text;
+
+            return ans;
+        }
+        #endregion
+
+
+        #endregion
+
+        /// <summary>
+        /// Thân nhân
+        /// </summary>
+        #region Thân nhân
+        #region LoadForm
+        private void InitControlThanNhan()
+        {
+            //QuaTrinhCongTacGroupThongTin.Enabled = false;
+            ThanNhanGroupThongTin.Enabled = false;
+
+            // cbx Quan He
+            ThanNhanCbxMoiQuanHe.DataSource = db.QUANHEGDs.ToList();
+            ThanNhanCbxMoiQuanHe.ValueMember = "ID";
+            ThanNhanCbxMoiQuanHe.DisplayMember = "TEN";
+        }
+        private void LoadDgvThanNhan()
+        {
+            int i = 0;
+            dgvThanNhanMain.DataSource = db.THANNHANs.ToList().Where(p => p.NHANVIENID == nhanvien.ID).OrderBy(p => p.NGAYSINH).Select(p => new
+            {
+                STT = ++i,
+                ID = p.ID,
+                HoTen = p.HOTEN,
+                NgaySinh = ((DateTime)p.NGAYSINH).ToString("dd/MM/yyyy"),
+                GioiTinh = p.GIOITINH == 0 ? "Nữ" : "Nam",
+                QuanHe = db.QUANHEGDs.Where(z => z.ID == p.QUANHEGDID).FirstOrDefault().TEN
+            });
+        }
+        private void LoadThanNhan()
+        {
+            InitControlThanNhan();
+            LoadDgvThanNhan();
+        }
+        #endregion
+
+        #region sự kiện ngầm
+        private void dgvThanNhanView_FocusedRowChanged(object sender, DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventArgs e)
+        {
+            UpdateDetailThanNhan();
+        }
+        #endregion
+
+        #region sự kiện
+        private void btnThemThanNhan_Click(object sender, EventArgs e)
+        {
+            if (btnThemThanNhan.Text == "Thêm")
+            {
+                btnThemThanNhan.Text = "Lưu";
+                btnXoaThanNhan.Text = "Hủy";
+                btnSuaThanNhan.Enabled = false;
+
+                dgvThanNhanMain.Enabled = false;
+                ThanNhanGroupThongTin.Enabled = true;
+
+                ClearControlThanNhan();
+
+                return;
+            }
+
+            if (btnThemThanNhan.Text == "Lưu")
+            {
+                if (CheckThanNhan())
+                {
+                    btnThemThanNhan.Text = "Thêm";
+                    btnXoaThanNhan.Text = "Xóa";
+                    btnSuaThanNhan.Enabled = true;
+
+                    dgvThanNhanMain.Enabled = true;
+                    ThanNhanGroupThongTin.Enabled = false;
+
+                    THANNHAN tg = GetThanNhanWithGroupThongTin();
+                    db.THANNHANs.Add(tg);
+                    db.SaveChanges();
+
+                    MessageBox.Show("Thêm thông tin thân nhân thành công thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadDgvThanNhan();
+                }
+                return;
+            }
+        }
+        private void btnSuaThanNhan_Click(object sender, EventArgs e)
+        {
+            THANNHAN tg = GetThanNhanWithID();
+
+            if (tg.ID == 0)
+            {
+                MessageBox.Show("Chưa có thông tin thân nhân nào được chọn", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (btnSuaThanNhan.Text == "Sửa")
+            {
+                btnSuaThanNhan.Text = "Lưu";
+                btnThemThanNhan.Enabled = false;
+                btnXoaThanNhan.Text = "Hủy";
+
+                dgvThanNhanMain.Enabled = false;
+                ThanNhanGroupThongTin.Enabled = true;
+
+                return;
+            }
+
+            if (btnSuaThanNhan.Text == "Lưu")
+            {
+                if (CheckThanNhan())
+                {
+                    btnSuaThanNhan.Text = "Sửa";
+                    btnThemThanNhan.Enabled = true;
+                    btnXoaThanNhan.Text = "Xóa";
+
+                    dgvThanNhanMain.Enabled = true;
+                    ThanNhanGroupThongTin.Enabled = false;
+
+                    THANNHAN kt = GetThanNhanWithGroupThongTin();
+                    tg.HOTEN = kt.HOTEN;
+                    tg.NGAYSINH = kt.NGAYSINH;
+                    tg.GIOITINH = kt.GIOITINH;
+                    tg.CMND = kt.CMND;
+                    tg.QUEQUAN = kt.QUEQUAN;
+                    tg.QUANHEGDID = kt.QUANHEGDID;
+                    db.SaveChanges();
+
+                    MessageBox.Show("Sửa thông tin thân nhân thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadDgvThanNhan();
+                }
+
+                return;
+            }
+        }
+        private void btnXoaThanNhan_Click(object sender, EventArgs e)
+        {
+            if (btnXoaThanNhan.Text == "Xóa")
+            {
+                THANNHAN tg = GetThanNhanWithID();
+
+                if (tg.ID == 0)
+                {
+                    MessageBox.Show("Chưa có thông tin thân nhân nào được chọn", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                DialogResult rs = MessageBox.Show("Bạn có chắc chắn xóa thông tin thân nhân này không?", "Thông báo", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+                if (rs == DialogResult.Cancel) return;
+
+                db.THANNHANs.Remove(tg);
+                db.SaveChanges();
+                MessageBox.Show("Xóa thông tin thân nhân thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                LoadDgvThanNhan();
+                return;
+            }
+
+            if (btnXoaThanNhan.Text == "Hủy")
+            {
+                btnXoaThanNhan.Text = "Xóa";
+                btnThemThanNhan.Enabled = true;
+                btnThemThanNhan.Text = "Thêm";
+                btnSuaThanNhan.Enabled = true;
+                btnSuaThanNhan.Text = "Sửa";
+
+                dgvThanNhanMain.Enabled = true;
+                ThanNhanGroupThongTin.Enabled = false;
+
+                UpdateDetailThanNhan();
+            }
+        }
+
+        #endregion
+
+        #region Hàm chức năng
+        private void ClearControlThanNhan()
+        {
+            ThanNhanTxtHoTen.Text = "";
+            ThanNhanTxtCMND.Text = "";
+            ThanNhanTxtQueQuan.Text = "";
+            ThanNhanDateNgaySinh.DateTime = DateTime.Now;
+            ThanNhanCbxGioiTinh.SelectedIndex = 0;
+            ThanNhanCbxMoiQuanHe.SelectedIndex = 0;
+        }
+        private void UpdateDetailThanNhan()
+        {
+            try
+            {
+                THANNHAN tg = GetThanNhanWithID();
+                ThanNhanTxtHoTen.Text = tg.HOTEN;
+                ThanNhanTxtCMND.Text = tg.CMND;
+                ThanNhanTxtQueQuan.Text = tg.QUEQUAN;
+                ThanNhanDateNgaySinh.DateTime = (DateTime)tg.NGAYSINH;
+                ThanNhanCbxGioiTinh.SelectedIndex = (int)tg.GIOITINH;
+                ThanNhanCbxMoiQuanHe.SelectedValue = tg.QUANHEGDID;
+            }
+            catch
+            {
+
+            }
+        }
+        private bool CheckThanNhan()
+        {
+            if (ThanNhanTxtHoTen.Text == "")
+            {
+                MessageBox.Show("Họ tên thân nhân không được để trống", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            if (ThanNhanTxtCMND.Text == "")
+            {
+                MessageBox.Show("CMND thân nhân không được để trống", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            if (ThanNhanTxtQueQuan.Text == "")
+            {
+                MessageBox.Show("Quê quán thân nhân không được để trống", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+
+            return true;
+        }
+
+        private THANNHAN GetThanNhanWithID()
+        {
+            int ID = 0;
+            try
+            {
+                ID = (int)dgvThanNhanView.GetFocusedRowCellValue("ID");
+            }
+            catch { return new THANNHAN(); }
+
+            THANNHAN tg = db.THANNHANs.Where(p => p.ID == ID).FirstOrDefault();
+            return tg;
+        }
+
+        private THANNHAN GetThanNhanWithGroupThongTin()
+        {
+            THANNHAN ans = new THANNHAN();
+            ans.NHANVIENID = nhanvien.ID;
+            ans.HOTEN = ThanNhanTxtHoTen.Text;
+            ans.NGAYSINH = ThanNhanDateNgaySinh.DateTime;
+            ans.GIOITINH = ThanNhanCbxGioiTinh.SelectedIndex;
+            ans.QUANHEGDID = (int)ThanNhanCbxMoiQuanHe.SelectedValue;
+            ans.QUEQUAN = ThanNhanTxtQueQuan.Text;
+            ans.CMND = ThanNhanTxtCMND.Text;
+
+            return ans;
+        }
+        #endregion
+
+        #endregion
+
+        /// <summary>
+        /// Tài sản
+        /// </summary>
+        #region Tài sản
+        #region LoadForm
+        private void InitControlTaiSan()
+        {
+            TaiSanGroupThongTin.Enabled = false;
+        }
+        private void LoadDgvTaiSan()
+        {
+            int i = 0;
+            dgvTaiSanMain.DataSource = db.TAISANs.ToList().Where(p => p.NHANVIENID == nhanvien.ID).OrderBy(p => p.GIATRI).Select(p => new
+            {
+                STT = ++i,
+                ID = p.ID,
+                Ten = p.TENTAISAN,
+                GiaTri = p.GIATRI,
+                SoLuong = p.SOLUONG,
+                Tong = p.GIATRI * p.SOLUONG
+            });
+        }
+        private void LoadTaiSan()
+        {
+            InitControlTaiSan();
+            LoadDgvTaiSan();
+        }
+        #endregion
+
+        #region sự kiện ngầm
+        private void dgvTaiSanView_FocusedRowChanged(object sender, DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventArgs e)
+        {
+            UpdateDetailTaiSan();
+        }
+        #endregion
+
+        #region sự kiện
+        private void btnThemTaiSan_Click(object sender, EventArgs e)
+        {
+            if (btnThemTaiSan.Text == "Thêm")
+            {
+                btnThemTaiSan.Text = "Lưu";
+                btnXoaTaiSan.Text = "Hủy";
+                btnSuaTaiSan.Enabled = false;
+
+                dgvTaiSanMain.Enabled = false;
+                TaiSanGroupThongTin.Enabled = true;
+
+                ClearControlTaiSan();
+
+                return;
+            }
+
+            if (btnThemTaiSan.Text == "Lưu")
+            {
+                if (CheckTaiSan())
+                {
+                    btnThemTaiSan.Text = "Thêm";
+                    btnXoaTaiSan.Text = "Xóa";
+                    btnSuaTaiSan.Enabled = true;
+
+                    dgvTaiSanMain.Enabled = true;
+                    TaiSanGroupThongTin.Enabled = false;
+
+                    TAISAN tg = GetTaiSanWithGroupThongTin();
+                    db.TAISANs.Add(tg);
+                    db.SaveChanges();
+
+                    MessageBox.Show("Thêm thông tin tài sản thành công thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadDgvTaiSan();
+                }
+                return;
+            }
+        }
+        private void btnSuaTaiSan_Click(object sender, EventArgs e)
+        {
+            TAISAN tg = GetTaiSanWithID();
+
+            if (tg.ID == 0)
+            {
+                MessageBox.Show("Chưa có thông tin tài sản nào được chọn", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (btnSuaTaiSan.Text == "Sửa")
+            {
+                btnSuaTaiSan.Text = "Lưu";
+                btnThemTaiSan.Enabled = false;
+                btnXoaTaiSan.Text = "Hủy";
+
+                dgvTaiSanMain.Enabled = false;
+                TaiSanGroupThongTin.Enabled = true;
+
+                return;
+            }
+
+            if (btnSuaTaiSan.Text == "Lưu")
+            {
+                if (CheckTaiSan())
+                {
+                    btnSuaTaiSan.Text = "Sửa";
+                    btnThemTaiSan.Enabled = true;
+                    btnXoaTaiSan.Text = "Xóa";
+
+                    dgvTaiSanMain.Enabled = true;
+                    TaiSanGroupThongTin.Enabled = false;
+
+                    TAISAN kt = GetTaiSanWithGroupThongTin();
+                    tg.TENTAISAN = kt.TENTAISAN;
+                    tg.BATDAUSOHUU = kt.BATDAUSOHUU;
+                    tg.GIATRI = kt.GIATRI;
+                    tg.GHICHU = kt.GHICHU;
+                    tg.SOLUONG = kt.SOLUONG;
+                    tg.NHANVIENID = kt.NHANVIENID;
+                    db.SaveChanges();
+
+                    MessageBox.Show("Sửa thông tin tài sản thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadDgvTaiSan();
+                }
+
+                return;
+            }
+        }
+        private void btnXoaTaiSan_Click(object sender, EventArgs e)
+        {
+            if (btnXoaTaiSan.Text == "Xóa")
+            {
+                TAISAN tg = GetTaiSanWithID();
+
+                if (tg.ID == 0)
+                {
+                    MessageBox.Show("Chưa có thông tin tài sản nào được chọn", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                DialogResult rs = MessageBox.Show("Bạn có chắc chắn xóa thông tin tài sản này không?", "Thông báo", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+                if (rs == DialogResult.Cancel) return;
+
+                db.TAISANs.Remove(tg);
+                db.SaveChanges();
+                MessageBox.Show("Xóa thông tin tài sản thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                LoadDgvTaiSan();
+                return;
+            }
+
+            if (btnXoaTaiSan.Text == "Hủy")
+            {
+                btnXoaTaiSan.Text = "Xóa";
+                btnThemTaiSan.Enabled = true;
+                btnThemTaiSan.Text = "Thêm";
+                btnSuaTaiSan.Enabled = true;
+                btnSuaTaiSan.Text = "Sửa";
+
+                dgvTaiSanMain.Enabled = true;
+                TaiSanGroupThongTin.Enabled = false;
+
+                UpdateDetailTaiSan();
+            }
+        }
+
+        #endregion
+
+        #region Hàm chức năng
+        private void ClearControlTaiSan()
+        {
+            TaiSanDateNgaySoHuu.DateTime = DateTime.Now;
+            TaiSanTxtGhiChu.Text = "";
+            TaiSanTxtGiaTri.Text = "";
+            TaiSanTxtSoLuong.Text = "";
+            TaiSanTxtTenTaiSan.Text = "";
+
+        }
+        private void UpdateDetailTaiSan()
+        {
+            try
+            {
+                TAISAN tg = GetTaiSanWithID();
+                TaiSanDateNgaySoHuu.DateTime = (DateTime)tg.BATDAUSOHUU;
+                TaiSanTxtGhiChu.Text = tg.GHICHU;
+                TaiSanTxtGiaTri.Text = tg.GIATRI.ToString();
+                TaiSanTxtSoLuong.Text = tg.SOLUONG.ToString();
+                TaiSanTxtTenTaiSan.Text = tg.TENTAISAN;
+            }
+            catch
+            {
+
+            }
+        }
+        private bool CheckTaiSan()
+        {
+            if (TaiSanTxtTenTaiSan.Text == "")
+            {
+                MessageBox.Show("Tên tài sản không được để trống", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            bool ok = false;
+
+            if (TaiSanTxtGiaTri.Text == "")
+            {
+                MessageBox.Show("Giá trị của tài sản không được để trống", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+
+            try
+            {
+                int z = Int32.Parse(TaiSanTxtGiaTri.Text);
+                ok = true;
+            }
+            catch { ok = false; }
+            if (!ok)
+            {
+                MessageBox.Show("Giá trị của tài sản phải là số nguyên", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+
+            if (TaiSanTxtSoLuong.Text == "")
+            {
+                MessageBox.Show("Số lượng của tài sản không được để trống", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            try
+            {
+                int z = Int32.Parse(TaiSanTxtSoLuong.Text);
+                ok = true;
+            }
+            catch { ok = false; }
+            if (!ok)
+            {
+                MessageBox.Show("Số lượng của tài sản phải là số nguyên", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            return true;
+        }
+
+        private TAISAN GetTaiSanWithID()
+        {
+            int ID = 0;
+            try
+            {
+                ID = (int)dgvTaiSanView.GetFocusedRowCellValue("ID");
+            }
+            catch { return new TAISAN(); }
+
+            TAISAN tg = db.TAISANs.Where(p => p.ID == ID).FirstOrDefault();
+            return tg;
+        }
+
+        private TAISAN GetTaiSanWithGroupThongTin()
+        {
+            TAISAN ans = new TAISAN();
+            ans.NHANVIENID = nhanvien.ID;
+            ans.BATDAUSOHUU = TaiSanDateNgaySoHuu.DateTime;
+            ans.GHICHU = TaiSanTxtGhiChu.Text;
+            ans.GIATRI = Int32.Parse(TaiSanTxtGiaTri.Text);
+            ans.SOLUONG = Int32.Parse(TaiSanTxtSoLuong.Text);
+            ans.TENTAISAN = TaiSanTxtTenTaiSan.Text;
+
+            return ans;
+        }
+        #endregion
+
+        #endregion
     }
 }
