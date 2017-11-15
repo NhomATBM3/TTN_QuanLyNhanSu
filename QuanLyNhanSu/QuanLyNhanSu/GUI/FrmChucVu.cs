@@ -202,6 +202,51 @@ namespace QuanLyNhanSu.GUI
         }
         #endregion
 
+        #region sự kiện
+        private void btnThem_Click(object sender, EventArgs e)
+        {
+            if (btnThem.Text == "Thêm")
+            {
+                btnThem.Text = "Lưu";
+                btnXoa.Enabled = false;
+                btnSua.Enabled = false;
+                btnHuy.Enabled = true;
+
+                dgvChucVuMain.Enabled = false;
+                groupThongTin.Enabled = true;
+
+                ClearControl();
+
+                return;
+            }
+
+            if (btnThem.Text == "Lưu")
+            {
+                if (Check())
+                {
+                    btnThem.Text = "Thêm";
+                    btnXoa.Enabled = true;
+                    btnSua.Enabled = true;
+                    btnHuy.Enabled = false;
+
+                    dgvChucVuMain.Enabled = true;
+                    groupThongTin.Enabled = false;
+
+                    CHUCVU tg = GetTTNhap();
+
+                    db.CHUCVUs.Add(tg);
+                    db.SaveChanges();
+
+                    MessageBox.Show("Thêm thông tin chức vụ thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Update();
+
+                }
+
+                return;
+            }
+        }
+
+
 
 
     }
