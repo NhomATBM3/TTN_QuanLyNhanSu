@@ -246,6 +246,100 @@ namespace QuanLyNhanSu.GUI
             }
         }
 
+        private void btnSua_Click(object sender, EventArgs e)
+        {
+            CHUCVU tg = GetTTNhap();
+            if (tg.ID == 0)
+            {
+                MessageBox.Show("Chưa có chức vụ nào được chọn", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (btnSua.Text == "Sửa")
+            {
+                btnSua.Text = "Lưu";
+                btnXoa.Enabled = false;
+                btnThem.Enabled = false;
+                btnHuy.Enabled = true;
+
+                dgvChucVuMain.Enabled = false;
+                groupThongTin.Enabled = true;
+
+                return;
+            }
+
+            if (btnSua.Text == "Lưu")
+            {
+                if (Check())
+                {
+                    btnSua.Text = "Sửa";
+                    btnXoa.Enabled = true;
+                    btnThem.Enabled = true;
+                    btnHuy.Enabled = false;
+
+                    dgvChucVuMain.Enabled = true;
+                    groupThongTin.Enabled = false;
+
+                    CHUCVU it = db.CHUCVUs.Where(p => p.ID == tg.ID).FirstOrDefault();
+                    it.TEN = tg.TEN;
+                    it.PHUCAPCHUCVU = tg.PHUCAPCHUCVU;
+                    db.SaveChanges();
+
+                    MessageBox.Show("Sửa thông tin chức vụ thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Update();
+
+                }
+
+                return;
+            }
+        }
+
+        private void btnXoa_Click(object sender, EventArgs e)
+        {
+            CHUCVU tg = GetThongTin();
+
+            if (tg.ID == 0)
+            {
+                MessageBox.Show("Chưa có chức vụ nào được chọn", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            DialogResult rs = MessageBox.Show("Bạn có chắc chắn xóa chức vụ " + tg.TEN + "?", "Thông báo", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+            if (rs == DialogResult.Cancel) return;
+
+            try
+            {
+                db.CHUCVUs.Remove(tg);
+                db.SaveChanges();
+
+                MessageBox.Show("Xóa thông tin phòng ban thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Update();
+            }
+            catch
+            {
+                MessageBox.Show("Xóa thông tin của phòng ban thất bại\nVui lòng xóa tất cả các nhân viên thuộc phòng ban và các phòng ban cấp dưới", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnHuy_Click(object sender, EventArgs e)
+        {
+            /// chỉnh lại trạng thái
+            btnThem.Text = "Thêm"; btnThem.Enabled = true;
+            btnSua.Text = "Sửa"; btnSua.Enabled = true;
+            btnXoa.Enabled = true;
+
+            groupThongTin.Enabled = false;
+            dgvChucVuMain.Enabled = true;
+
+            CapNhatDetail();
+        }
+
+        private void btnDong_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+        #endregion
+
 
 
 
