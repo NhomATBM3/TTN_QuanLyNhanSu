@@ -2260,5 +2260,416 @@ namespace QuanLyNhanSu.GUI
         #endregion
 
         #endregion
+
+        /// <summary>
+        /// Công việc đc phân
+        /// </summary>
+        #region Tài sản
+        #region LoadForm
+        private string GetTrangThai(int k)
+        {
+            if (k == 0) return "Mới nhận việc";
+            if (k == 1) return "Đang thực hiện";
+            if (k == 2) return "Hoàn thành";
+            if (k == 3) return "Đã Dừng";
+            if (k == 4) return "Hủy";
+            if (k == 5) return "Chuyển";
+            return "Đéo phải làm";
+        }
+        private void InitControlCongViecPhanCong()
+        {
+            CongViecPhanCongGroupThongTin.Enabled = false;
+
+            // cbx Nguoi Giao Viec
+            CongViecPhanCongCbxNguoiGiaoViec.DataSource = db.NHANVIENs.ToList();
+            CongViecPhanCongCbxNguoiGiaoViec.ValueMember = "ID";
+            CongViecPhanCongCbxNguoiGiaoViec.DisplayMember = "HOTEN";
+
+            CongViecPhanCongCbxTrangThaiViec.SelectedIndex = 0;
+        }
+        private void LoadDgvCongViecPhanCong()
+        {
+            int i = 0;
+            dgvCongViecPhanCongMain.DataSource = db.CONGVIECNHVs.ToList().Where(p => p.NHANVIENID == nhanvien.ID).OrderBy(p => p.NGAYGIAOVIEC).Select(p => new
+            {
+                STT = ++i,
+                ID = p.ID,
+                TenViec = p.TEN,
+                NguoiGiaoViec = db.NHANVIENs.Where(z => z.ID == p.NGUOIGIAOVIEC).FirstOrDefault().HOTEN,
+                TrangThaiViec = GetTrangThai((int)p.TRANGTHAI)
+            });
+        }
+        private void LoadCongViecPhanCong()
+        {
+            InitControlCongViecPhanCong();
+            LoadDgvCongViecPhanCong();
+        }
+        #endregion
+
+        #region sự kiện ngầm
+        private void dgvCongViecPhanCongView_FocusedRowChanged(object sender, DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventArgs e)
+        {
+            UpdateDetailCongViecPhanCong();
+        }
+        #endregion
+
+        #region sự kiện
+        private void btnThemCongViecPhanCong_Click(object sender, EventArgs e)
+        {
+            if (btnThemCongViecPhanCong.Text == "Thêm")
+            {
+                btnThemCongViecPhanCong.Text = "Lưu";
+                btnXoaCongViecPhanCong.Text = "Hủy";
+                btnSuaCongViecPhanCong.Enabled = false;
+
+                dgvCongViecPhanCongMain.Enabled = false;
+                CongViecPhanCongGroupThongTin.Enabled = true;
+
+                ClearControlCongViecPhanCong();
+
+                return;
+            }
+
+            if (btnThemCongViecPhanCong.Text == "Lưu")
+            {
+                if (CheckCongViecPhanCong())
+                {
+                    btnThemCongViecPhanCong.Text = "Thêm";
+                    btnXoaCongViecPhanCong.Text = "Xóa";
+                    btnSuaCongViecPhanCong.Enabled = true;
+
+                    dgvCongViecPhanCongMain.Enabled = true;
+                    CongViecPhanCongGroupThongTin.Enabled = false;
+
+                    CONGVIECNHV tg = GetCongViecPhanCongWithGroupThongTin();
+                    db.CONGVIECNHVs.Add(tg);
+                    db.SaveChanges();
+
+                    MessageBox.Show("Thêm thông tin công việc thành công thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadDgvCongViecPhanCong();
+                }
+                return;
+            }
+        }
+        private void btnSuaCongViecPhanCong_Click(object sender, EventArgs e)
+        {
+            CONGVIECNHV tg = GetCongViecPhanCongWithID();
+
+            if (tg.ID == 0)
+            {
+                MessageBox.Show("Chưa có thông tin công việc nào được chọn", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (btnSuaCongViecPhanCong.Text == "Sửa")
+            {
+                btnSuaCongViecPhanCong.Text = "Lưu";
+                btnThemCongViecPhanCong.Enabled = false;
+                btnXoaCongViecPhanCong.Text = "Hủy";
+
+                dgvCongViecPhanCongMain.Enabled = false;
+                CongViecPhanCongGroupThongTin.Enabled = true;
+
+                return;
+            }
+
+            if (btnSuaCongViecPhanCong.Text == "Lưu")
+            {
+                if (CheckCongViecPhanCong())
+                {
+                    btnSuaCongViecPhanCong.Text = "Sửa";
+                    btnThemCongViecPhanCong.Enabled = true;
+                    btnXoaCongViecPhanCong.Text = "Xóa";
+
+                    dgvCongViecPhanCongMain.Enabled = true;
+                    CongViecPhanCongGroupThongTin.Enabled = false;
+
+                    CONGVIECNHV kt = GetCongViecPhanCongWithGroupThongTin();
+
+                    tg.NHANVIENID = kt.NHANVIENID;
+                    tg.TEN = kt.TEN;
+                    tg.GHICHU = kt.GHICHU;
+                    tg.NGUOIGIAOVIEC = kt.NGUOIGIAOVIEC;
+                    tg.TRANGTHAI = kt.TRANGTHAI;
+                    tg.NGAYGIAOVIEC = kt.NGAYGIAOVIEC;
+                    tg.NGAYBATDAU = kt.NGAYBATDAU;
+                    tg.NGAYKETTHUC = kt.NGAYKETTHUC;
+
+                    db.SaveChanges();
+
+                    MessageBox.Show("Sửa thông tin công việc thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadDgvCongViecPhanCong();
+                }
+
+                return;
+            }
+        }
+        private void btnXoaCongViecPhanCong_Click(object sender, EventArgs e)
+        {
+            if (btnXoaCongViecPhanCong.Text == "Xóa")
+            {
+                CONGVIECNHV tg = GetCongViecPhanCongWithID();
+
+                if (tg.ID == 0)
+                {
+                    MessageBox.Show("Chưa có thông tin công việc nào được chọn", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                DialogResult rs = MessageBox.Show("Bạn có chắc chắn xóa thông tin công việc này không?", "Thông báo", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+                if (rs == DialogResult.Cancel) return;
+
+                db.CONGVIECNHVs.Remove(tg);
+                db.SaveChanges();
+                MessageBox.Show("Xóa thông tin công việc thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                LoadDgvCongViecPhanCong();
+                return;
+            }
+
+            if (btnXoaCongViecPhanCong.Text == "Hủy")
+            {
+                btnXoaCongViecPhanCong.Text = "Xóa";
+                btnThemCongViecPhanCong.Enabled = true;
+                btnThemCongViecPhanCong.Text = "Thêm";
+                btnSuaCongViecPhanCong.Enabled = true;
+                btnSuaCongViecPhanCong.Text = "Sửa";
+
+                dgvCongViecPhanCongMain.Enabled = true;
+                CongViecPhanCongGroupThongTin.Enabled = false;
+
+                UpdateDetailCongViecPhanCong();
+            }
+        }
+
+        #endregion
+
+        #region Hàm chức năng
+        private void ClearControlCongViecPhanCong()
+        {
+            CongViecPhanCongTxtTenViec.Text = "";
+            CongViecPhanCongTxtGhiChu.Text = "";
+            CongViecPhanCongCbxNguoiGiaoViec.SelectedIndex = 0;
+            CongViecPhanCongCbxTrangThaiViec.SelectedIndex = 0;
+            CongViecPhanCongDateNgayGiaoViec.DateTime = DateTime.Now;
+            CongViecPhanCongDateNgayBatDau.DateTime = DateTime.Now;
+            CongViecPhanCongDateNgayKetThuc.DateTime = DateTime.Now;
+        }
+        private void UpdateDetailCongViecPhanCong()
+        {
+            try
+            {
+                CONGVIECNHV tg = GetCongViecPhanCongWithID();
+                CongViecPhanCongTxtTenViec.Text = tg.TEN;
+                CongViecPhanCongTxtGhiChu.Text = tg.GHICHU;
+                CongViecPhanCongCbxNguoiGiaoViec.SelectedValue = tg.NGUOIGIAOVIEC;
+                CongViecPhanCongCbxTrangThaiViec.SelectedIndex = (int)tg.TRANGTHAI;
+                CongViecPhanCongDateNgayGiaoViec.DateTime = (DateTime)tg.NGAYGIAOVIEC;
+                CongViecPhanCongDateNgayBatDau.DateTime = (DateTime)tg.NGAYBATDAU;
+                CongViecPhanCongDateNgayKetThuc.DateTime = (DateTime)tg.NGAYKETTHUC;
+            }
+            catch
+            {
+
+            }
+        }
+        private bool CheckCongViecPhanCong()
+        {
+            if (CongViecPhanCongTxtTenViec.Text == "")
+            {
+                MessageBox.Show("Tên công việc không được để trống", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            bool ok = false;
+
+            return true;
+        }
+
+        private CONGVIECNHV GetCongViecPhanCongWithID()
+        {
+            int ID = 0;
+            try
+            {
+                ID = (int)dgvCongViecPhanCongView.GetFocusedRowCellValue("ID");
+            }
+            catch { return new CONGVIECNHV(); }
+
+            CONGVIECNHV tg = db.CONGVIECNHVs.Where(p => p.ID == ID).FirstOrDefault();
+            return tg;
+        }
+
+        private CONGVIECNHV GetCongViecPhanCongWithGroupThongTin()
+        {
+            CONGVIECNHV ans = new CONGVIECNHV();
+            ans.NHANVIENID = nhanvien.ID;
+            ans.TEN = CongViecPhanCongTxtTenViec.Text;
+            ans.GHICHU = CongViecPhanCongTxtGhiChu.Text;
+            ans.NGUOIGIAOVIEC = (int)CongViecPhanCongCbxNguoiGiaoViec.SelectedValue;
+            ans.TRANGTHAI = (int)CongViecPhanCongCbxTrangThaiViec.SelectedIndex;
+            ans.NGAYGIAOVIEC = CongViecPhanCongDateNgayGiaoViec.DateTime;
+            ans.NGAYBATDAU = CongViecPhanCongDateNgayBatDau.DateTime;
+            ans.NGAYKETTHUC = CongViecPhanCongDateNgayKetThuc.DateTime;
+
+            return ans;
+        }
+        #endregion
+
+        #endregion
+
+        /// <summary>
+        /// Bảo hiểm y tế
+        /// </summary>
+        #region Bảo hiểm y tế
+        private void ThemBaoHiemYTe()
+        {
+            BAOHIEMYTE baohiem = new BAOHIEMYTE();
+            baohiem.NHANVIENID = nhanvien.ID;
+            baohiem.BATDAU = DateTime.Now;
+            baohiem.KETTHUC = DateTime.Now;
+            db.BAOHIEMYTEs.Add(baohiem);
+            db.SaveChanges();
+        }
+        private void LoadBaoHiemYTe()
+        {
+            BAOHIEMYTE baohiem;
+            baohiem = db.BAOHIEMYTEs.Where(p => p.NHANVIENID == nhanvien.ID).FirstOrDefault();
+            if (baohiem == null)
+            {
+                ThemBaoHiemYTe();
+                baohiem = db.BAOHIEMYTEs.Where(p => p.NHANVIENID == nhanvien.ID).FirstOrDefault();
+            }
+
+            BaoHiemYTeDateNgayBatDau.DateTime = (DateTime)baohiem.BATDAU;
+            BaoHiemYTeNgayKetThuc.DateTime = (DateTime)baohiem.KETTHUC;
+            BaoHiemYTeTxtNoiCap.Text = baohiem.NOICAP;
+            BaoHiemYTeTxtSoThe.Text = baohiem.SOTHE;
+        }
+
+        private void LuuBaoHiemYTe()
+        {
+            BAOHIEMYTE baohiem;
+            baohiem = db.BAOHIEMYTEs.Where(p => p.NHANVIENID == nhanvien.ID).FirstOrDefault();
+
+            baohiem.BATDAU = BaoHiemYTeDateNgayBatDau.DateTime;
+            baohiem.KETTHUC = BaoHiemYTeNgayKetThuc.DateTime;
+            baohiem.NOICAP = BaoHiemYTeTxtNoiCap.Text;
+            baohiem.SOTHE = BaoHiemYTeTxtSoThe.Text;
+        }
+        #endregion
+
+        /// <summary>
+        /// Bảo hiểm xã hôi
+        /// </summary>
+        #region Bảo hiểm xã hội
+        private void ThemBaoHiemXaHoi()
+        {
+            BAOHIEMXAHOI baohiem = new BAOHIEMXAHOI();
+            baohiem.NHANVIENID = nhanvien.ID;
+            baohiem.NGAYLAMSO = DateTime.Now;
+            baohiem.NGAYCAPSO = DateTime.Now;
+            baohiem.NGAYTHOIBAOHIEM = DateTime.Now;
+            baohiem.NOICAP = "";
+            baohiem.SOBAOHIEM = "";
+
+            db.BAOHIEMXAHOIs.Add(baohiem);
+            db.SaveChanges();
+        }
+        private void LoadBaoHiemXaHoi()
+        {
+            BAOHIEMXAHOI baohiem;
+            baohiem = db.BAOHIEMXAHOIs.Where(p => p.NHANVIENID == nhanvien.ID).FirstOrDefault();
+            if (baohiem == null)
+            {
+                ThemBaoHiemXaHoi();
+                baohiem = db.BAOHIEMXAHOIs.Where(p => p.NHANVIENID == nhanvien.ID).FirstOrDefault();
+            }
+
+            BaoHiemXaHoiDateNgayCapSo.DateTime = (DateTime)baohiem.NGAYCAPSO;
+            BaoHiemXaHoiDateNgayLamSo.DateTime = (DateTime)baohiem.NGAYLAMSO;
+            BaoHiemXaHoiDateNgayThoiBaoHiem.DateTime = (DateTime)baohiem.NGAYTHOIBAOHIEM;
+            BaoHiemXaHoiTxtNoiCap.Text = baohiem.NOICAP;
+            BaoHiemXaHoiTxtSoThue.Text = baohiem.SOBAOHIEM;
+
+        }
+
+        private void LuuBaoHiemXaHoi()
+        {
+            BAOHIEMXAHOI baohiem;
+            baohiem = db.BAOHIEMXAHOIs.Where(p => p.NHANVIENID == nhanvien.ID).FirstOrDefault();
+
+            baohiem.NHANVIENID = nhanvien.ID;
+            baohiem.NGAYLAMSO = BaoHiemXaHoiDateNgayLamSo.DateTime;
+            baohiem.NGAYCAPSO = BaoHiemXaHoiDateNgayCapSo.DateTime;
+            baohiem.NGAYTHOIBAOHIEM = BaoHiemXaHoiDateNgayThoiBaoHiem.DateTime;
+            baohiem.NOICAP = BaoHiemXaHoiTxtNoiCap.Text;
+            baohiem.SOBAOHIEM = BaoHiemXaHoiTxtSoThue.Text;
+        }
+        #endregion
+
+        ///<summary>
+        /// Lương
+        /// </summary>
+        #region Lương
+        private void LoadLuong()
+        {
+            try
+            {
+                LUONG luong = db.LUONGs.Where(p => p.ID == nhanvien.LUONGID).FirstOrDefault();
+                CHUCVU chucvu = db.CHUCVUs.Where(p => p.ID == nhanvien.CHUCVUID).FirstOrDefault();
+
+                if (luong != null)
+                {
+                    txtLuongHeSoLuong.Text = ((float)luong.HESOLUONG).ToString("0.00");
+                    txtLuongPhuCapChucVu.Text = ((float)chucvu.PHUCAPCHUCVU).ToString("0.00");
+                    txtLuongThamNienVuotKhung.Text = ((float)luong.THAMNIENVUOTKHUNG).ToString("0.00");
+                    txtLuongHeSoChenhLech.Text = ((float)luong.HESOCHENHLECHBAOLUU).ToString("0.00");
+                    txtLuongTrachNhiem.Text = ((float)luong.TRACHNHIEM).ToString("0.00");
+                    txtLuongDocHai.Text = ((float)luong.DOCHAI).ToString("0.00");
+                    txtLuongDangUyVien.Text = ((float)luong.DANGUYVIEN).ToString("0.00");
+                    txtLuongHuongDanThuViec.Text = ((float)luong.HUONGDANTHUVIEC).ToString("0.00");
+                }
+            }
+            catch { }
+        }
+
+        private void LuuLuong()
+        {
+            try
+            {
+                LUONG luong = db.LUONGs.Where(p => p.ID == nhanvien.LUONGID).FirstOrDefault();
+
+                if (luong != null)
+                {
+                    luong.HESOLUONG = float.Parse(txtLuongHeSoLuong.Text);
+                    luong.THAMNIENVUOTKHUNG = float.Parse(txtLuongThamNienVuotKhung.Text);
+                    luong.HESOCHENHLECHBAOLUU = float.Parse(txtLuongHeSoChenhLech.Text);
+                    luong.TRACHNHIEM = float.Parse(txtLuongTrachNhiem.Text);
+                    luong.DOCHAI = float.Parse(txtLuongDocHai.Text);
+                    luong.DANGUYVIEN = float.Parse(txtLuongDangUyVien.Text);
+                    luong.HUONGDANTHUVIEC = float.Parse(txtLuongHuongDanThuViec.Text);
+                }
+                else
+                {
+                    // nếu chưa có bản ghi nào lương của nhân viên thì tạo bản ghi mới
+                    luong = new LUONG();
+                    luong.HESOLUONG = float.Parse(txtLuongHeSoLuong.Text);
+                    luong.THAMNIENVUOTKHUNG = float.Parse(txtLuongThamNienVuotKhung.Text);
+                    luong.HESOCHENHLECHBAOLUU = float.Parse(txtLuongHeSoChenhLech.Text);
+                    luong.TRACHNHIEM = float.Parse(txtLuongTrachNhiem.Text);
+                    luong.DOCHAI = float.Parse(txtLuongDocHai.Text);
+                    luong.DANGUYVIEN = float.Parse(txtLuongDangUyVien.Text);
+                    luong.HUONGDANTHUVIEC = float.Parse(txtLuongHuongDanThuViec.Text);
+
+                    db.LUONGs.Add(luong);
+                    db.SaveChanges();
+
+                    nhanvien.LUONGID = luong.ID;
+                    db.SaveChanges();
+                }
+            }
+            catch { }
+        }
+
+        #endregion
     }
 }
