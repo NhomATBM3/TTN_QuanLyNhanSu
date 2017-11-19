@@ -14,16 +14,70 @@ namespace QuanLyNhanSu.GUI
     public partial class FrmTonGiao : Form
     {
 
+        private QuanLyNhanSuDbContext db = DBService.db;
+        private int index = 0;
+        private int index1 = 0;
 
         #region constructor
         public FrmTonGiao()
         {
             InitializeComponent();
-            
+            DBService.Reload();
         }
         #endregion
 
-  
+        #region LoadForm
+
+        private void LoadDgvPhongBan()
+        {
+            int i = 1;
+            dgvMain.DataSource = db.TONGIAOs.ToList().Select(p => new
+            {
+                STT = i++,
+                ID = p.ID,
+                TenTG = p.TEN
+            });
+
+            // chỉnh lại dòng thành dòng vừa chọn
+            try
+            {
+                index = index1;
+                dgvView.FocusedRowHandle = index;
+
+            }
+            catch { }
+        }
+
+        private void LoadInitControl()
+        {
+            groupThongTin.Enabled = false;
+            btnHuy.Enabled = false;
+        }
+        private void FrmPhongBan_Load(object sender, EventArgs e)
+        {
+            LoadInitControl();
+            LoadDgvPhongBan();
+
+        }
+        #endregion
+
+        #region sự kiện ngầm
+        private void dgvPhongBan_FocusedRowChanged(object sender, DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventArgs e)
+        {
+            try
+            {
+                CapNhatDetail();
+
+                index1 = index;
+                index = dgvView.FocusedRowHandle;
+            }
+            catch
+            {
+            }
+        }
+        #endregion
+
+
 
     }
 }
