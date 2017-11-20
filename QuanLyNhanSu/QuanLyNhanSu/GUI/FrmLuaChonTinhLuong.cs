@@ -33,6 +33,24 @@ namespace QuanLyNhanSu.GUI
         }
         #endregion
 
+        #region sự kiện
+        private void btnBaoCaoTinhLuong_Click(object sender, EventArgs e)
+        {
+            int id = (int)cbxPhongBan.SelectedValue;
+            PHONGBAN pb = db.PHONGBANs.Where(p => p.ID == id).FirstOrDefault();
+            FrmRpTinhLuong form = new FrmRpTinhLuong(pb);
+            this.Hide();
+            form.ShowDialog();
+            this.Close();
+        }
+
+        private void btnThoat_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+        #endregion
+
+
 
 
 
