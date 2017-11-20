@@ -60,6 +60,22 @@ namespace QuanLyNhanSu.GUI
 
         }
         #endregion
+        #region sự kiện ngầm
+        private void dgvPhongBan_FocusedRowChanged(object sender, DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventArgs e)
+        {
+            try
+            {
+                CapNhatDetail();
+
+                index1 = index;
+                index = dgvView.FocusedRowHandle;
+            }
+            catch
+            {
+            }
+        }
+        #endregion
+
 
 
     }
