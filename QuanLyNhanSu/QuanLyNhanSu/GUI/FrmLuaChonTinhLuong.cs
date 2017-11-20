@@ -13,15 +13,26 @@ namespace QuanLyNhanSu.GUI
 {
     public partial class FrmLuaChonTinhLuong : Form
     {
-        
+
+        private QuanLyNhanSuDbContext db = DAO.DBService.db;
 
         #region constructor
         public FrmLuaChonTinhLuong()
         {
             InitializeComponent();
-            
+            DAO.DBService.Reload();
         }
         #endregion
+
+        #region LoadForm
+        private void FrmLuaChonTinhLuong_Load(object sender, EventArgs e)
+        {
+            cbxPhongBan.DataSource = db.PHONGBANs.ToList();
+            cbxPhongBan.DisplayMember = "TEN";
+            cbxPhongBan.ValueMember = "ID";
+        }
+        #endregion
+
 
 
 
