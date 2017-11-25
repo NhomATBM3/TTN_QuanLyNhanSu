@@ -31,6 +31,36 @@ namespace QuanLyNhanSu.GUI
         #endregion
 
 
+        #region sự kiện
+        private void btnThayDoi_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                int k = Int32.Parse(txtLuongCoBan.Text);
+                THAMSOHETHONG luongcoban = db.THAMSOHETHONGs.FirstOrDefault();
+                luongcoban.VALUE = k;
+                db.SaveChanges();
+
+                MessageBox.Show("Thay đổi thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                this.Close();
+            }
+            catch
+            {
+                MessageBox.Show("Lương cơ bản phải là số nguyên", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+        }
+
+        private void btnThoat_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+        #endregion
+
+
+
+
+
 
 
 
